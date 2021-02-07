@@ -30,21 +30,7 @@ export default function Header() {
     };
 
     useEffect(() => {
-        // const handleGamePhaseResult = (snapshot) => {
-        //     const DBGamePhase = snapshot.val();
-
-        //     if (game && DBGamePhase !== gamePhase) {
-        //         if (DBGamePhase) {
-        //             setGamePhase(gamePhases[DBGamePhase]);
-        //             sessionStorage.setItem("gamePhase", DBGamePhase);
-        //         }
-        //     }
-        // };
-
-        // appFirebase.databaseApi.readOn(`games/${game ? game.gameId : 0}/gamePhase`, handleGamePhaseResult);
-        console.log(gameId);
         if (gameId) {
-            console.log(gameId)
             dispatch(asyncGameActions.subscribeToGame(gameId))
             dispatch(asyncGamePhaseActions.subscribeToGamePhase(gameId))
         }

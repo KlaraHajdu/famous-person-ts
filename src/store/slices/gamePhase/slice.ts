@@ -13,7 +13,7 @@ const gamePhaseSlice = createSlice({
     name: 'gamePhase',
     initialState: initialState,
     reducers: {
-        'NEXT_GAMEPHASE_ENTERED': (state, action: PayloadAction<any>) => {
+        'NEXT_GAMEPHASE_ENTERED': (state, action: PayloadAction<GamePhase>) => {
             state.gamePhase = action.payload
             
         },
@@ -36,11 +36,26 @@ export const subscribeToGamePhase = createAsyncThunk<string, number, { state: Ro
         }
     }
 )
+
+export const changeGamePhase = createAsyncThunk<string, GamePhase, { state: RootState }>(
+    'gamephase/changegamephase', async (payload, thunkApi) => {
+        const state = thunkApi.getState()
+        const { gameId } = state.game
+        try {
+            await databaseApi.changeGamePhase(payload, gameId)
+            return 'gamephase_updated_in_db'
+        }
+        catch {
+            return thunkApi.rejectWithValue('database_down')
+        }
+    }
+)
     
 export default gamePhaseSlice.reducer
 
 export const gamePhaseActions = gamePhaseSlice.actions
 
 export const asyncGamePhaseActions = {
-    subscribeToGamePhase
+    subscribeToGamePhase,
+    changeGamePhase
 }

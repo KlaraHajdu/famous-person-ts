@@ -1,8 +1,9 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { databaseApi } from "../../../services/FirebaseRD/fbDatabase";
 import GamePhase from "../../../types/GamePhase";
+import { formTeams } from "../../../utils/randomUtil";
 import RootState from "../../RootState";
-import { gamePhaseActions } from "../gamePhase/slice";
+import { asyncGamePhaseActions, gamePhaseActions } from "../gamePhase/slice";
 
 const initialState = {
     gameId: sessionStorage.getItem("gameId") || null,
@@ -35,60 +36,56 @@ const gameSlice = createSlice({
         'GAME_UPDATED': (state, action: PayloadAction<{
             gameMaster?: string, round?: number, ownTeam?: string, teamOnTurn?: string
             greenPlayerIndex?: number, bluePlayerIndex?: number, turnOngoing?: string,
-            players?: string[], greenTeam?: string[], blueTeam?: string[]
+            players?: string[], teams?: { greenTeam: string[], blueTeam:string[] }
         }>) => {
 
             for (let key of Object.keys(action.payload)) {
                 switch (key) {
                     case "gameMaster":
-                        if (action.payload["gameMaster"]) { 
-                            state.gameMaster = action.payload["gameMaster"]
+                        if (action.payload.gameMaster) { 
+                            state.gameMaster = action.payload.gameMaster
                         }
                         break
                     case "ownTeam":
-                            if (action.payload["ownTeam"]) {
-                                state.ownTeam = action.payload["ownTeam"]
+                            if (action.payload.ownTeam) {
+                                state.ownTeam = action.payload.ownTeam
                             }
                         break
                     case "round":
-                        if (action.payload["round"]) {
-                            state.round = action.payload["round"]
+                        if (action.payload.round) {
+                            state.round = action.payload.round
                         }
                         break
 
                     case "teamOnTurn":
-                            if (action.payload["teamOnTurn"]) {
-                                state.teamOnTurn = action.payload["teamOnTurn"]
+                            if (action.payload.teamOnTurn) {
+                                state.teamOnTurn = action.payload.teamOnTurn
                             }
                         break
                     case "greenPlayerIndex":
-                            if (action.payload["greenPlayerIndex"]) {
-                                state.greenPlayerIndex = action.payload["greenPlayerIndex"]
+                            if (action.payload.greenPlayerIndex) {
+                                state.greenPlayerIndex = action.payload.greenPlayerIndex
                             }
                         break
                     case "bluePlayerIndex":
-                            if (action.payload["bluePlayerIndex"]) {
-                                state.bluePlayerIndex = action.payload["bluePlayerIndex"]
+                            if (action.payload.bluePlayerIndex) {
+                                state.bluePlayerIndex = action.payload.bluePlayerIndex
                             }
                         break
                     case "turnOngoing":
-                            if (action.payload["turnOngoing"]) {
-                                state.turnOngoing = action.payload["turnOngoing"]
+                            if (action.payload.turnOngoing) {
+                                state.turnOngoing = action.payload.turnOngoing
                             }
                         break
                     case "players":
-                            if (action.payload["players"]) {
-                                state.players = Object.keys(action.payload["players"])
+                            if (action.payload.players) {
+                                state.players = Object.keys(action.payload.players)
                             }
                         break
-                    case "greenTeam":
-                            if (action.payload["greenTeam"]) {
-                                state.greenTeam = action.payload["greenTeam"]
-                            }
-                        break
-                    case "blueTeam":
-                            if (action.payload["blueTeam"]) {
-                                state.greenTeam = action.payload["blueTeam"]
+                    case "teams":
+                            if (action.payload.teams) {
+                                state.greenTeam = Object.values(action.payload.teams.greenTeam)
+                                state.blueTeam = Object.values(action.payload.teams.blueTeam)
                             }
                         break
                 }
@@ -170,9 +167,8 @@ export const createNewGame = createAsyncThunk<string, {gameId: number, gameMaste
             const newGame = { gameId, gameMaster, ownName: gameMaster }
             await databaseApi.createNewGame(newGame)
             thunkApi.dispatch(gameActions.GAME_CREATED(newGame))
-            // thunkApi.dispatch(gamePhaseActions.NEXT_GAMEPHASE_ENTERED(GamePhase.WAITING_ROOM));
-            sessionStorage.setItem("gameMaster", payload.gameMaster); // itt???
-            sessionStorage.setItem("ownName", payload.gameMaster);
+            sessionStorage.setItem("gameMaster", payload.gameMaster)
+            sessionStorage.setItem("ownName", payload.gameMaster)
             return 'new_game_created'
         }
         catch {
@@ -205,6 +201,27 @@ export const subscribeToGame = createAsyncThunk<string, number, { state: RootSta
     }
 )
 
+export const createTeams = createAsyncThunk<string, string, { state: RootState }>(
+    'game/createteams', async (payload, thunkApi) => {
+        const state = thunkApi.getState()
+        const { game } = state
+        const { players, gameId } = game
+        if (!players) {
+            return 'no_players'
+        }
+        const teams = formTeams(players)
+        const { greenTeam, blueTeam } = teams
+        try {
+            await databaseApi.setTeams(greenTeam, blueTeam, gameId)
+            thunkApi.dispatch(asyncGamePhaseActions.changeGamePhase(GamePhase.ADD_NAMES))
+            return 'teams_updated_in_database'
+        }
+        catch {
+            return thunkApi.rejectWithValue('database_down')
+        }
+    }
+)
+
 export default gameSlice.reducer
 
 export const gameActions = gameSlice.actions
@@ -214,5 +231,6 @@ export const asyncGameActions = {
     checkIfPlayerNameExists,
     createNewGame,
     joinGame,
-    subscribeToGame
+    subscribeToGame,
+    createTeams
 }
