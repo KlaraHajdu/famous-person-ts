@@ -10,13 +10,13 @@ const initialState = {
     gameMaster: sessionStorage.getItem("gameMaster") || null,
     ownTeam: sessionStorage.getItem("ownTeam") || null,
     players: sessionStorage.getItem("players")?.split(",") || null,
-    round: sessionStorage.getItem("round") || 1,
+    round: Number(sessionStorage.getItem("round")) || 1,
     teamOnTurn: sessionStorage.getItem("teamOnTurn") || "greenTeam",
-    greenPlayerIndex: sessionStorage.getItem("greenTeamPlayerIndex") || "0",
-    bluePlayerIndex: sessionStorage.getItem("blueTeamPlayerIndex") || "0",
+    greenPlayerIndex: Number(sessionStorage.getItem("greenTeamPlayerIndex")) || 0,
+    bluePlayerIndex: Number(sessionStorage.getItem("blueTeamPlayerIndex")) || 0,
     turnOngoing: sessionStorage.getItem("turnOngoing") || "0",
-    blueTeamScore: sessionStorage.getItem("blueTeamScore") || "0",
-    greenTeamScore: sessionStorage.getItem("greenTeamScore") || "0",
+    blueTeamScore: Number(sessionStorage.getItem("blueTeamScore")) || 0,
+    greenTeamScore: Number(sessionStorage.getItem("greenTeamScore")) || 0,
     greenTeam:  sessionStorage.getItem("greenTeam")?.split(",")  || null,
     blueTeam:  sessionStorage.getItem("blueTeam")?.split(",")  || null,
 
@@ -32,11 +32,71 @@ const gameSlice = createSlice({
             state.gameMaster = action.payload.gameMaster
             
         },
+        'GAME_UPDATED': (state, action: PayloadAction<{
+            gameMaster?: string, round?: number, ownTeam?: string, teamOnTurn?: string
+            greenPlayerIndex?: number, bluePlayerIndex?: number, turnOngoing?: string,
+            players?: string[], greenTeam?: string[], blueTeam?: string[]
+        }>) => {
+
+            for (let key of Object.keys(action.payload)) {
+                switch (key) {
+                    case "gameMaster":
+                        if (action.payload["gameMaster"]) { 
+                            state.gameMaster = action.payload["gameMaster"]
+                        }
+                        break
+                    case "ownTeam":
+                            if (action.payload["ownTeam"]) {
+                                state.ownTeam = action.payload["ownTeam"]
+                            }
+                        break
+                    case "round":
+                        if (action.payload["round"]) {
+                            state.round = action.payload["round"]
+                        }
+                        break
+
+                    case "teamOnTurn":
+                            if (action.payload["teamOnTurn"]) {
+                                state.teamOnTurn = action.payload["teamOnTurn"]
+                            }
+                        break
+                    case "greenPlayerIndex":
+                            if (action.payload["greenPlayerIndex"]) {
+                                state.greenPlayerIndex = action.payload["greenPlayerIndex"]
+                            }
+                        break
+                    case "bluePlayerIndex":
+                            if (action.payload["bluePlayerIndex"]) {
+                                state.bluePlayerIndex = action.payload["bluePlayerIndex"]
+                            }
+                        break
+                    case "turnOngoing":
+                            if (action.payload["turnOngoing"]) {
+                                state.turnOngoing = action.payload["turnOngoing"]
+                            }
+                        break
+                    case "players":
+                            if (action.payload["players"]) {
+                                state.players = Object.keys(action.payload["players"])
+                            }
+                        break
+                    case "greenTeam":
+                            if (action.payload["greenTeam"]) {
+                                state.greenTeam = action.payload["greenTeam"]
+                            }
+                        break
+                    case "blueTeam":
+                            if (action.payload["blueTeam"]) {
+                                state.greenTeam = action.payload["blueTeam"]
+                            }
+                        break
+                }
+                }
+        },
         'GAME_JOINED': (state, action: PayloadAction<any>) => {
-            state.ownName = action.payload.ownName
             state.gameId = action.payload.gameId
-            state.gameMaster = action.payload.gameMaster
-            
+            state.ownName = action.payload.ownName
         },
         'OWN_TEAM_JOINED': (state, action: PayloadAction<any>) => {
             state.ownTeam = action.payload.ownTeam
@@ -83,7 +143,18 @@ const gameSlice = createSlice({
 export const checkIfGameExists = createAsyncThunk<string | boolean, string, {state: RootState}>(
     'game/checkifgameidexists', async (payload, thunkApi) => {
         try {
-            const response = await databaseApi.readOnceId(`games/${payload}`)
+            const response = await databaseApi.checkIfGameIdExists(payload)
+            return !!response 
+        }
+        catch {
+            return thunkApi.rejectWithValue('database_down')
+        }
+})
+
+export const checkIfPlayerNameExists = createAsyncThunk<string | boolean, { gameId: number, ownName: string }, {state: RootState}>(
+    'game/checkifplayernameexists', async (payload, thunkApi) => {
+        try {
+            const response = await databaseApi.checkIfPlayerNameExists(payload.gameId, payload.ownName )
             return !!response 
         }
         catch {
@@ -95,16 +166,44 @@ export const checkIfGameExists = createAsyncThunk<string | boolean, string, {sta
 export const createNewGame = createAsyncThunk<string, {gameId: number, gameMaster: string}, { state: RootState }>(
     'game/createnewgame', async (payload, thunkApi) => {
         try {
-            await databaseApi.createNewGame(payload)
-            sessionStorage.setItem("gameMaster", payload.gameMaster);
+            const { gameId, gameMaster } = payload
+            const newGame = { gameId, gameMaster, ownName: gameMaster }
+            await databaseApi.createNewGame(newGame)
+            thunkApi.dispatch(gameActions.GAME_CREATED(newGame))
+            // thunkApi.dispatch(gamePhaseActions.NEXT_GAMEPHASE_ENTERED(GamePhase.WAITING_ROOM));
+            sessionStorage.setItem("gameMaster", payload.gameMaster); // itt???
             sessionStorage.setItem("ownName", payload.gameMaster);
-            thunkApi.dispatch(gamePhaseActions.NEXT_GAMEPHASE_ENTERED(GamePhase.WAITING_ROOM));
             return 'new_game_created'
         }
         catch {
             return thunkApi.rejectWithValue('database_down')
         }
-    })
+})
+
+export const joinGame = createAsyncThunk<string, {gameId: number, ownName: string}, { state: RootState }>(
+    'game/joingame', async (payload, thunkApi) => {
+        try {
+            await databaseApi.joinGame(payload)
+            thunkApi.dispatch(gameActions.GAME_JOINED(payload))
+            return 'game_joined'
+        }
+        catch {
+            return thunkApi.rejectWithValue('database_down')
+        }
+})
+    
+export const subscribeToGame = createAsyncThunk<string, number, { state: RootState }>(
+    'game/subscribetogame', async (payload, thunkApi) => {
+        try {
+            await databaseApi.subscribeToGame(payload,
+               (snapshot: any) => thunkApi.dispatch(gameActions.GAME_UPDATED(snapshot)))
+            return 'game_updated'
+        }
+        catch {
+            return thunkApi.rejectWithValue('database_down')
+        }
+    }
+)
 
 export default gameSlice.reducer
 
@@ -112,5 +211,8 @@ export const gameActions = gameSlice.actions
 
 export const asyncGameActions = {
     checkIfGameExists,
-    createNewGame
+    checkIfPlayerNameExists,
+    createNewGame,
+    joinGame,
+    subscribeToGame
 }

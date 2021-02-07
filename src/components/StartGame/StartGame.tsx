@@ -35,7 +35,6 @@ export default function StartGame() {
                 return;
             }
             gameIdExists = promise.payload;
-            console.log(gameIdExists);
         } while (gameIdExists);
         return generatedId;
     };
