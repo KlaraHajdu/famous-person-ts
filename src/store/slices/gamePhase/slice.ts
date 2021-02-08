@@ -2,7 +2,6 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { databaseApi } from "../../../services/FirebaseRD/fbDatabase";
 import GamePhase from "../../../types/GamePhase";
 import RootState from "../../RootState";
-import { gameActions } from "../game/slice";
 
 const initialState = {
     gamePhase: GamePhase[sessionStorage.getItem("gamePhase")! as keyof typeof GamePhase] || null,
@@ -24,7 +23,7 @@ const gamePhaseSlice = createSlice({
     }
 })
 
-export const subscribeToGamePhase = createAsyncThunk<string, number, { state: RootState }>(
+export const subscribeToGamePhase = createAsyncThunk<string, string, { state: RootState }>(
     'gamephase/subscribetogamephase', async (payload, thunkApi) => {
         try {
             await databaseApi.subscribeToGamePhase(payload,
@@ -42,7 +41,7 @@ export const changeGamePhase = createAsyncThunk<string, GamePhase, { state: Root
         const state = thunkApi.getState()
         const { gameId } = state.game
         try {
-            await databaseApi.changeGamePhase(payload, gameId)
+            await databaseApi.changeGamePhase(gameId, payload)
             return 'gamephase_updated_in_db'
         }
         catch {

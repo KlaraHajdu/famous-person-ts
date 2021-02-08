@@ -14,3 +14,11 @@ export const selectBlueTeamScore = (state: RootState) => state.game.blueTeamScor
 export const selectGreenTeamScore = (state: RootState) => state.game.greenTeamScore
 export const selectGreenTeam = (state: RootState) => state.game.greenTeam
 export const selectBlueTeam = (state: RootState) => state.game.blueTeam
+export const selectGreenTeamNames = (state: RootState) => state.game.names.greenTeam
+export const selectBlueTeamNames = (state: RootState) => state.game.names.blueTeam
+export const selectAllNames = (state: RootState) => {
+    if (state.game.names.greenTeam && state.game.names.blueTeam) {
+       return state.game.names.blueTeam.concat(state.game.names.greenTeam)
+    }
+    return []
+}

@@ -5,43 +5,27 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import TeamContainer from "../TeamContainer/TeamContainer";
 import { MiddleContainerInThreeColumns } from "./styled";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { selectAllNames, selectGameMaster, selectOwnName } from "../../store/slices/game/gameSelector";
+import { asyncGamePhaseActions } from "../../store/slices/gamePhase/slice";
+import GamePhase from "../../types/GamePhase";
 
 function AddNames() {
-    const NUMBER_OF_NAMES_TO_START_GAME = 2;
+    const NUMBER_OF_NAMES_TO_START_GAME = 4;
+    const namesSubmitted = useSelector(selectAllNames);
+    const ownName = useSelector(selectOwnName)
+    const gameMaster = useSelector(selectGameMaster)
+    const dispatch = useDispatch()
 
+    useEffect(() => {
+        if (ownName !== gameMaster) {
+           return
+        }
+        if (namesSubmitted.length === NUMBER_OF_NAMES_TO_START_GAME) {
+            dispatch(asyncGamePhaseActions.changeGamePhase(GamePhase.PLAY_GAME))
+        }
 
-    // useEffect(() => {
-    //     const actAfterSettingPlayGamePhase = (err) => {
-    //         if (!!err) {
-    //             console.log(err);
-    //         } else {
-    //             console.log("Play game phase was set successfully in db");
-    //         }
-    //     };
-
-    //     const setPlayGamePhaseInDB = () => {
-    //         appFirebase.databaseApi.update(
-    //             `games/${game.gameId}`,
-    //             { gamePhase: "playGame" },
-    //             actAfterSettingPlayGamePhase
-    //         );
-    //     };
-
-    //     const handleNamesResult = (snapshot) => {
-    //         if (snapshot.val()) {
-    //             if (Object.keys(snapshot.val()).length === NUMBER_OF_NAMES_TO_START_GAME) {
-    //                 setPlayGamePhaseInDB();
-    //             }
-    //         }
-    //     };
-
-    //     const followHowManyNamesAdded = () => {
-    //         appFirebase.databaseApi.readOn(`games/${game.gameId}/names`, handleNamesResult);
-    //     };
-
-    //     if (game.ownName === game.gameMaster) followHowManyNamesAdded();
-    // }, []);
+    }, [dispatch, gameMaster, namesSubmitted, ownName])
 
     return (
         <div>

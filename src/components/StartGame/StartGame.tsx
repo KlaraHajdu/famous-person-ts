@@ -3,10 +3,7 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { getRandomNumberFromTo } from "../../utils/randomUtil";
 import { useDispatch } from "react-redux";
-import { gameActions } from "../../store/slices/game/slice";
 import { asyncGameActions } from "../../store/slices/game/slice";
-import { gamePhaseActions } from "../../store/slices/gamePhase/slice";
-import GamePhase from "../../types/GamePhase";
 import { MainTile } from "../../Theme/theme";
 
 export default function StartGame() {
@@ -23,7 +20,6 @@ export default function StartGame() {
             setHelperText(null);
         }
     };
-
 
     const generateId = async () => {
         let generatedId: number;
@@ -46,10 +42,10 @@ export default function StartGame() {
                 return;
             }
             const gameDetails = {
-                gameId,
+                gameId: gameId.toString(),
                 gameMaster: name,
             };
-            dispatch(asyncGameActions.createNewGame(gameDetails))
+            dispatch(asyncGameActions.createNewGame(gameDetails));
         }
     };
 

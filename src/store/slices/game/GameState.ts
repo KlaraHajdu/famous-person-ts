@@ -12,7 +12,11 @@ type GameState = {
     blueTeamScore: number,
     greenTeamScore: number,
     greenTeam:  string[] | null,
-    blueTeam:  string[] | null,
+    blueTeam: string[] | null,
+    names: {
+        blueTeam: string[],
+        greenTeam: string[],
+    },
 }
 
 export default GameState

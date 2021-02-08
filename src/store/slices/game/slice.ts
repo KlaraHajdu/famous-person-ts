@@ -3,7 +3,7 @@ import { databaseApi } from "../../../services/FirebaseRD/fbDatabase";
 import GamePhase from "../../../types/GamePhase";
 import { formTeams } from "../../../utils/randomUtil";
 import RootState from "../../RootState";
-import { asyncGamePhaseActions, gamePhaseActions } from "../gamePhase/slice";
+import { asyncGamePhaseActions } from "../gamePhase/slice";
 
 const initialState = {
     gameId: sessionStorage.getItem("gameId") || null,
@@ -19,7 +19,11 @@ const initialState = {
     blueTeamScore: Number(sessionStorage.getItem("blueTeamScore")) || 0,
     greenTeamScore: Number(sessionStorage.getItem("greenTeamScore")) || 0,
     greenTeam:  sessionStorage.getItem("greenTeam")?.split(",")  || null,
-    blueTeam:  sessionStorage.getItem("blueTeam")?.split(",")  || null,
+    blueTeam: sessionStorage.getItem("blueTeam")?.split(",") || null,
+    names: {
+        greenTeam: sessionStorage.getItem("greenTeamNames")?.split(",") || [],
+        blueTeam: sessionStorage.getItem("blueTeamNames")?.split(",") || [],
+    }  
 
 }
 
@@ -36,7 +40,8 @@ const gameSlice = createSlice({
         'GAME_UPDATED': (state, action: PayloadAction<{
             gameMaster?: string, round?: number, ownTeam?: string, teamOnTurn?: string
             greenPlayerIndex?: number, bluePlayerIndex?: number, turnOngoing?: string,
-            players?: string[], teams?: { greenTeam: string[], blueTeam:string[] }
+            players?: string[], teams?: { greenTeam: string[], blueTeam: string[] },
+            names?: { greenTeam: string, blueTeam:string }
         }>) => {
 
             for (let key of Object.keys(action.payload)) {
@@ -86,7 +91,30 @@ const gameSlice = createSlice({
                             if (action.payload.teams) {
                                 state.greenTeam = Object.values(action.payload.teams.greenTeam)
                                 state.blueTeam = Object.values(action.payload.teams.blueTeam)
+                                if (state.ownName && state.greenTeam.includes(state.ownName)) {
+                                    state.ownTeam = "greenTeam"
+                                }
+                                else {
+                                    state.ownTeam = "blueTeam"
+                                }
+                                
                             }
+                        break
+                    case "names":
+                        if (action.payload.names && action.payload.names.greenTeam) {
+                            Object.keys(action.payload.names.greenTeam).forEach((n) => {
+                                if (!state.names.greenTeam.includes(n)) {
+                                    state.names.greenTeam.push(n)
+                                }
+                            })
+                        }
+                        if (action.payload.names && action.payload.names.blueTeam) {
+                            Object.keys(action.payload.names.blueTeam).forEach((n) => {
+                                if (!state.names.blueTeam.includes(n)) {
+                                    state.names.blueTeam.push(n)
+                                }
+                            })
+                        }    
                         break
                 }
                 }
@@ -94,12 +122,6 @@ const gameSlice = createSlice({
         'GAME_JOINED': (state, action: PayloadAction<any>) => {
             state.gameId = action.payload.gameId
             state.ownName = action.payload.ownName
-        },
-        'OWN_TEAM_JOINED': (state, action: PayloadAction<any>) => {
-            state.ownTeam = action.payload.ownTeam
-        },
-        'PLAYERS_UPDATED': (state, action: PayloadAction<any>) => {
-            state.players = action.payload.players
         },
         'ROUND_ENDED': (state, action: PayloadAction<any>) => {
             state.round = action.payload.nextRound
@@ -126,12 +148,6 @@ const gameSlice = createSlice({
         },
         'BLUE_TEAM_SCORED': (state, action: PayloadAction<any>) => {
             state.blueTeamScore = action.payload.blueTeamScore
-        },
-         "GREEN_TEAM_SET": (state, action: PayloadAction<any>) => {
-                state.greenTeam = action.payload.greenTeam
-        },
-         "BLUE_TEAM_SET":  (state, action: PayloadAction<any>) => {
-                state.blueTeam = action.payload.blueTeam
         }
     }
 }
@@ -148,7 +164,7 @@ export const checkIfGameExists = createAsyncThunk<string | boolean, string, {sta
         }
 })
 
-export const checkIfPlayerNameExists = createAsyncThunk<string | boolean, { gameId: number, ownName: string }, {state: RootState}>(
+export const checkIfPlayerNameExists = createAsyncThunk<string | boolean, { gameId: string, ownName: string }, {state: RootState}>(
     'game/checkifplayernameexists', async (payload, thunkApi) => {
         try {
             const response = await databaseApi.checkIfPlayerNameExists(payload.gameId, payload.ownName )
@@ -160,12 +176,12 @@ export const checkIfPlayerNameExists = createAsyncThunk<string | boolean, { game
 })
 
 
-export const createNewGame = createAsyncThunk<string, {gameId: number, gameMaster: string}, { state: RootState }>(
+export const createNewGame = createAsyncThunk<string, {gameId: string, gameMaster: string}, { state: RootState }>(
     'game/createnewgame', async (payload, thunkApi) => {
         try {
             const { gameId, gameMaster } = payload
             const newGame = { gameId, gameMaster, ownName: gameMaster }
-            await databaseApi.createNewGame(newGame)
+            await databaseApi.createNewGame(gameId, gameMaster)
             thunkApi.dispatch(gameActions.GAME_CREATED(newGame))
             sessionStorage.setItem("gameMaster", payload.gameMaster)
             sessionStorage.setItem("ownName", payload.gameMaster)
@@ -176,10 +192,11 @@ export const createNewGame = createAsyncThunk<string, {gameId: number, gameMaste
         }
 })
 
-export const joinGame = createAsyncThunk<string, {gameId: number, ownName: string}, { state: RootState }>(
+export const joinGame = createAsyncThunk<string, {gameId: string, ownName: string}, { state: RootState }>(
     'game/joingame', async (payload, thunkApi) => {
+        const {gameId, ownName } = payload
         try {
-            await databaseApi.joinGame(payload)
+            await databaseApi.joinGame(gameId, ownName)
             thunkApi.dispatch(gameActions.GAME_JOINED(payload))
             return 'game_joined'
         }
@@ -188,7 +205,7 @@ export const joinGame = createAsyncThunk<string, {gameId: number, ownName: strin
         }
 })
     
-export const subscribeToGame = createAsyncThunk<string, number, { state: RootState }>(
+export const subscribeToGame = createAsyncThunk<string, string, { state: RootState }>(
     'game/subscribetogame', async (payload, thunkApi) => {
         try {
             await databaseApi.subscribeToGame(payload,
@@ -212,9 +229,45 @@ export const createTeams = createAsyncThunk<string, string, { state: RootState }
         const teams = formTeams(players)
         const { greenTeam, blueTeam } = teams
         try {
-            await databaseApi.setTeams(greenTeam, blueTeam, gameId)
+            await databaseApi.setTeams(gameId, greenTeam, blueTeam)
             thunkApi.dispatch(asyncGamePhaseActions.changeGamePhase(GamePhase.ADD_NAMES))
             return 'teams_updated_in_database'
+        }
+        catch {
+            return thunkApi.rejectWithValue('database_down')
+        }
+    }
+)
+
+export const checkIfNameExists = createAsyncThunk<string, string, { state: RootState }>(
+    'game/checkifnameexists', async (payload, thunkApi) => {
+        const state = thunkApi.getState()
+        const { game } = state
+        const { gameId } = game 
+        try {
+            const nameExists = await databaseApi.checkIfNameExists(gameId, payload)
+            if (!nameExists) {
+                thunkApi.dispatch(asyncGameActions.addName(payload))
+            }
+            return 'name_checked_if_exists'
+        }
+        catch {
+            return thunkApi.rejectWithValue('database_down')
+        }
+    }
+)
+
+export const addName = createAsyncThunk<string, string, { state: RootState }>(
+    'game/addname', async (payload, thunkApi) => {
+        const state = thunkApi.getState()
+        const { game } = state
+        const { gameId, ownTeam } = game 
+        if (!ownTeam) {
+            return thunkApi.rejectWithValue('no_own_team')
+        }
+        try {
+            await databaseApi.addName(gameId, payload, ownTeam)
+            return 'name_added_in_database'
         }
         catch {
             return thunkApi.rejectWithValue('database_down')
@@ -229,8 +282,10 @@ export const gameActions = gameSlice.actions
 export const asyncGameActions = {
     checkIfGameExists,
     checkIfPlayerNameExists,
+    checkIfNameExists,
     createNewGame,
     joinGame,
     subscribeToGame,
-    createTeams
+    createTeams,
+    addName
 }

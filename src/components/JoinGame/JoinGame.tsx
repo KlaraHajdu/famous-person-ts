@@ -8,7 +8,7 @@ import { MainTile } from "../../Theme/theme";
 function JoinGame() {
     const dispatch = useDispatch();
     const [ownName, setOwnName] = useState<null | string>(null);
-    const [gameId, setGameId] = useState<null | number>(null);
+    const [gameId, setGameId] = useState<null | string>(null);
     const [helperText, setHelperText] = useState<null | string>(null);
     const [gameIdHelperText, setGameIdHelperText] = useState<null | string>(null);
 
@@ -27,29 +27,12 @@ function JoinGame() {
         if (!gameIdInput) {
             setGameIdHelperText("Game ID cannot be empty!");
         } else if (!Number(gameIdInput)) {
-            setGameIdHelperText("Game ID is a number!");
+            setGameIdHelperText("Game ID must be a number!");
         } else {
-            setGameId(Number(gameIdInput));
+            setGameId(gameIdInput);
             setGameIdHelperText(null);
         }
     };
-
-    // const checkSnapshot = async (snapshot: any) => {
-    //     if (!!snapshot.val()) {
-    //         let playersSnapshot = await appFirebase.database().ref(`games/${gameId}/players`).once("value");
-    //         let playersLowerCase = Object.keys(playersSnapshot.val()).map((name) => name.toLowerCase());
-    //         if (playersLowerCase.includes(ownName.toLowerCase())) {
-    //             setHelperText("This name is already taken, please choose another!");
-    //         } else {
-    //             dispatch(joinGame(ownName, gameId, snapshot.val().gameMaster));
-    //             sessionStorage.setItem("gameId", gameId);
-    //             sessionStorage.setItem("ownName", ownName);
-    //             sessionStorage.setItem("gameMaster", snapshot.val().gameMaster);
-    //         }
-    //     } else {
-    //         setGameIdHelperText("Wrong game ID!");
-    //     }
-    // };
 
     const verifyGameId = async (gameId: string) => {
         const gameExists = await dispatch(asyncGameActions.checkIfGameExists(gameId));
@@ -61,7 +44,7 @@ function JoinGame() {
             return;
         }
 
-        const canJoinGame = await verifyGameId(gameId.toString());
+        const canJoinGame = await verifyGameId(gameId);
         if (!canJoinGame) {
             setGameIdHelperText("Wrong game ID!");
             return;
@@ -71,14 +54,12 @@ function JoinGame() {
             return;
         }
         const playerNameExists = await dispatch(asyncGameActions.checkIfPlayerNameExists({ gameId, ownName }));
-        console.log(playerNameExists);
 
         if (playerNameExists.payload) {
             setHelperText("This name is already taken, please choose another!");
             return;
-        }
-        else {
-            dispatch(asyncGameActions.joinGame({gameId, ownName}))
+        } else {
+            dispatch(asyncGameActions.joinGame({ gameId, ownName }));
         }
     };
 

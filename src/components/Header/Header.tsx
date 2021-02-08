@@ -13,7 +13,7 @@ import HowToPlay from "../HowToPlay/HowToPlay";
 import { asyncGameActions } from "../../store/slices/game/slice";
 
 export default function Header() {
-    const gameId = useSelector(selectGameId);
+    const gameId: string = useSelector(selectGameId);
     const gamePhase = useSelector(selectGamePhase);
     const dispatch = useDispatch();
 

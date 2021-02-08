@@ -1,83 +1,52 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { selectBlueTeamNames, selectGreenTeamNames, selectOwnTeam } from "../../store/slices/game/gameSelector";
+import { asyncGameActions } from "../../store/slices/game/slice";
 
 export default function NameInputForm(props: { numberOfNames: number }) {
     const { numberOfNames } = props;
-    const [nameToSubmit, setNameToSubmit] = useState("");
-    const [teamNamesNumber, setTeamNamesNumber] = useState(0);
+    const ownTeam = useSelector(selectOwnTeam);
+    const greenTeamNames = useSelector(selectGreenTeamNames);
+    const blueTeamNames = useSelector(selectBlueTeamNames);
+    const [namesSubmittedByTeam, setNamesSubmittedByTeam] = useState<number>(0);
+    const [nameToSubmit, setNameToSubmit] = useState<string>("");
     const [helperText, setHelperText] = useState<null | string>(null);
+    const dispatch = useDispatch();
 
     const saveNameToSubmit = (event: ChangeEvent<HTMLInputElement>) => {
         let name = event.target.value;
         if (name.length > 20) setHelperText("Name too long!");
-        else {
+        if (name.length === 0) {
+            setHelperText("Please give a name!");
+            setNameToSubmit("");
+        } else {
             setNameToSubmit(event.target.value);
             setHelperText(null);
         }
     };
 
-    const submitName = () => {
-        // if (nameToSubmit !== "") {
-        //     appFirebase.databaseApi.readOnce(
-        //         `games/${game.gameId}/names/${nameToSubmit}`,
-        //         checkIfNameIsAlreadySubmitted
-        //     );
-        // }
+    const submitName = async () => {
+        if (helperText) {
+            return;
+        }
+        dispatch(asyncGameActions.checkIfNameExists(nameToSubmit));
+        setNameToSubmit("");
     };
 
-    // const actAfterNameSubmittedToAllNames = (err) => {
-    //     if (!!err) {
-    //         console.log(err);
-    //     } else {
-    //         console.log(`Name ${nameToSubmit} added successfully to all names`);
-    //         setNameToSubmit("");
-    //     }
-    // };
+    useEffect(() => {
+        if (!ownTeam) {
+            return;
+        }
+        if (ownTeam === "greenTeam") {
+            setNamesSubmittedByTeam(greenTeamNames.length);
+        } else {
+            setNamesSubmittedByTeam(blueTeamNames.length);
+        }
+    }, [blueTeamNames, greenTeamNames, ownTeam]);
 
-    // const actAfterNameSubmittedToTheTeamNames = (err) => {
-    //     if (!!err) {
-    //         console.log(err);
-    //     } else {
-    //         console.log(`Name ${nameToSubmit} added successfully to the ${game.ownTeam} names`);
-    //         setNameToSubmit("");
-    //     }
-    // };
-
-    // const checkIfNameIsAlreadySubmitted = (snapshot) => {
-    //     if (!snapshot.exists()) createNewName();
-    //     else setNameToSubmit("");
-    // };
-
-    // const createNewName = () => {
-    //     appFirebase.databaseApi.create(
-    //         `games/${game.gameId}/names/${nameToSubmit}`,
-    //         true,
-    //         actAfterNameSubmittedToAllNames
-    //     );
-    //     appFirebase.databaseApi.create(
-    //         `games/${game.gameId}/${game.ownTeam}Names/${nameToSubmit}`,
-    //         true,
-    //         actAfterNameSubmittedToTheTeamNames
-    //     );
-    // };
-
-    // const handleTeamNamesResult = (snapshot) => {
-    //     if (snapshot.val()) {
-    //         setTeamNamesNumber(Object.keys(snapshot.val()).length);
-    //     }
-    // };
-
-    // useEffect(() => {
-    //     const checkHowManyNamesSentByMyTeam = () => {
-    //         appFirebase.databaseApi.readOn(`games/${game.gameId}/${game.ownTeam}Names`, handleTeamNamesResult);
-    //     };
-
-    //     if (game.ownTeam) checkHowManyNamesSentByMyTeam();
-    // }, [game.gameId, game.ownTeam]);
-
-    if (teamNamesNumber >= numberOfNames / 2)
+    if (namesSubmittedByTeam >= numberOfNames / 2)
         return (
             <div>
                 <p>Your team has already submitted {numberOfNames / 2}.</p>
@@ -88,7 +57,7 @@ export default function NameInputForm(props: { numberOfNames: number }) {
     return (
         <div>
             <div>
-                Your team has added {teamNamesNumber} {teamNamesNumber > 1 ? "names" : "name"} from the{" "}
+                Your team has added {namesSubmittedByTeam} {namesSubmittedByTeam > 1 ? "names" : "name"} from the{" "}
                 {numberOfNames / 2}.
             </div>
             <Form>
