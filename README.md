@@ -1,46 +1,15 @@
-# Getting Started with Create React App
+# Guess!
+An application created for playing a guessing game online by a group of 4-12 people. It enables to play this game with friends even within quarantine, with the additional use of a videoconferencing app.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+It is built with React - Typescript, Redux toolkit, Bootstrap and styled components, using Firebase Realtime Database.
 
-## Available Scripts
+## Project status
+This project is a rewrite of a previous Javascript project: https://github.com/KlaraHajdu/famousperson. It is written in Typescript, using Redux Toolkit. The rewrite is still in progress. The next iterations will focus on finishing the rewrite to TS, refactoring styling and adding tests to the components and the slices. 
 
-In the project directory, you can run:
+The original JS app is deployed at: https://famous-person-guessing-game.web.app/
 
-### `yarn start`
+### Installation and Setup Instructions
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+`yarn start` Runs the app in the development mode. Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `yarn test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `yarn build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+`yarn test` Launches the test runner in the interactive watch mode.
