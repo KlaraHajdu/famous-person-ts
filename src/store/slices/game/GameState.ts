@@ -8,7 +8,7 @@ type GameState = {
     teamOnTurn: string,
     greenPlayerIndex: number,
     bluePlayerIndex: number,
-    turnOngoing: string,
+    turnOngoing: boolean,
     blueTeamScore: number,
     greenTeamScore: number,
     greenTeam:  string[] | null,
@@ -17,6 +17,9 @@ type GameState = {
         blueTeam: string[],
         greenTeam: string[],
     },
+    round1Names: string[] | null,
+    round2Names: string[] | null,
+    round3Names: string[] | null,
 }
 
 export default GameState

@@ -22,3 +22,13 @@ export const selectAllNames = (state: RootState) => {
     }
     return []
 }
+export const selectAllWordsInRound = (state: RootState) => {
+    switch (state.game.round) {
+        case 1:
+            return state.game.round1Names
+        case 2:
+            return state.game.round2Names
+        case 3:
+            return state.game.round3Names
+    }
+}

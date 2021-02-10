@@ -11,7 +11,7 @@ import { asyncGamePhaseActions } from "../../store/slices/gamePhase/slice";
 import GamePhase from "../../types/GamePhase";
 
 function AddNames() {
-    const NUMBER_OF_NAMES_TO_START_GAME = 4;
+    const NUMBER_OF_NAMES_TO_START_GAME = 2;
     const namesSubmitted = useSelector(selectAllNames);
     const ownName = useSelector(selectOwnName)
     const gameMaster = useSelector(selectGameMaster)

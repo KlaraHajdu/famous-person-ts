@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import moment from "moment";
 import { databaseApi } from "../../../services/FirebaseRD/fbDatabase";
 import GamePhase from "../../../types/GamePhase";
 import { formTeams } from "../../../utils/randomUtil";
@@ -15,7 +16,7 @@ const initialState = {
     teamOnTurn: sessionStorage.getItem("teamOnTurn") || "greenTeam",
     greenPlayerIndex: Number(sessionStorage.getItem("greenTeamPlayerIndex")) || 0,
     bluePlayerIndex: Number(sessionStorage.getItem("blueTeamPlayerIndex")) || 0,
-    turnOngoing: sessionStorage.getItem("turnOngoing") || "0",
+    turnOngoing: !!sessionStorage.getItem("turnOngoing") || false,
     blueTeamScore: Number(sessionStorage.getItem("blueTeamScore")) || 0,
     greenTeamScore: Number(sessionStorage.getItem("greenTeamScore")) || 0,
     greenTeam:  sessionStorage.getItem("greenTeam")?.split(",")  || null,
@@ -23,7 +24,10 @@ const initialState = {
     names: {
         greenTeam: sessionStorage.getItem("greenTeamNames")?.split(",") || [],
         blueTeam: sessionStorage.getItem("blueTeamNames")?.split(",") || [],
-    }  
+    },
+    round1Names: sessionStorage.getItem("round1")?.split(",") || [],
+    round2Names: sessionStorage.getItem("round2")?.split(",") || [],
+    round3Names: sessionStorage.getItem("round3")?.split(",") || [],
 
 }
 
@@ -38,10 +42,12 @@ const gameSlice = createSlice({
             
         },
         'GAME_UPDATED': (state, action: PayloadAction<{
-            gameMaster?: string, round?: number, ownTeam?: string, teamOnTurn?: string
-            greenPlayerIndex?: number, bluePlayerIndex?: number, turnOngoing?: string,
+            gameMaster?: string, round?: number, teamOnTurn?: string
+            greenPlayerIndex?: number, bluePlayerIndex?: number, blueTeamScore?: number,
+            greenTeamScore?: number, turnOngoing?: boolean,
             players?: string[], teams?: { greenTeam: string[], blueTeam: string[] },
-            names?: { greenTeam: string, blueTeam:string }
+            names?: { greenTeam: string, blueTeam: string },
+            round1?: string[], round2?: string[], round3?: string[],
         }>) => {
 
             for (let key of Object.keys(action.payload)) {
@@ -50,11 +56,6 @@ const gameSlice = createSlice({
                         if (action.payload.gameMaster) { 
                             state.gameMaster = action.payload.gameMaster
                         }
-                        break
-                    case "ownTeam":
-                            if (action.payload.ownTeam) {
-                                state.ownTeam = action.payload.ownTeam
-                            }
                         break
                     case "round":
                         if (action.payload.round) {
@@ -75,6 +76,16 @@ const gameSlice = createSlice({
                     case "bluePlayerIndex":
                             if (action.payload.bluePlayerIndex) {
                                 state.bluePlayerIndex = action.payload.bluePlayerIndex
+                            }
+                        break
+                    case "greenTeamScore":
+                            if (action.payload.greenTeamScore) {
+                                state.greenTeamScore = action.payload.greenTeamScore
+                            }
+                        break
+                    case "blueTeamScore":
+                            if (action.payload.blueTeamScore) {
+                                state.blueTeamScore = action.payload.blueTeamScore
                             }
                         break
                     case "turnOngoing":
@@ -116,38 +127,30 @@ const gameSlice = createSlice({
                             })
                         }    
                         break
+                    case "round1":
+                        state.round1Names = Object.entries(action.payload.round1!).filter(([key, value]) => value).map((arr) => arr[0])
+                        break
+                    case "round2":
+                        state.round2Names = Object.entries(action.payload.round2!).filter(([key, value]) => value).map((arr) => arr[0])
+                        break
+                    case "round3":
+                        state.round3Names = Object.entries(action.payload.round3!).filter(([key, value]) => value).map((arr) => arr[0])
+                        break
                 }
-                }
+            }
         },
         'GAME_JOINED': (state, action: PayloadAction<any>) => {
             state.gameId = action.payload.gameId
             state.ownName = action.payload.ownName
         },
-        'ROUND_ENDED': (state, action: PayloadAction<any>) => {
-            state.round = action.payload.nextRound
+        'TEAMONTURN_UPDATED': (state, action: PayloadAction<any>) => {
+            state.teamOnTurn = action.payload.teamOnTurn
         },
-        'BLUEPLAYER_FINISHED': (state, action: PayloadAction<any>) => {
-            state.bluePlayerIndex = action.payload.nextBluePlayerIndex
+        'GREENPLAYERINDEX_UPDATED': (state, action: PayloadAction<any>) => {
+            state.greenPlayerIndex = action.payload
         },
-        
-        'GREENPLAYER_FINISHED': (state, action: PayloadAction<any>) => {
-            state.greenPlayerIndex = action.payload.nextGreenPlayerIndex
-        },
-        
-        'TEAM_FINISHED': (state, action: PayloadAction<any>) => {
-            state.teamOnTurn = action.payload.nextTeam
-        },
-        
-        'TURN_ONGOING': (state, action: PayloadAction<any>) => {
-            state.turnOngoing = action.payload.finished
-        },
-         
-        'GREEN_TEAM_SCORED': (state, action: PayloadAction<any>) => {
-            state.greenTeamScore = action.payload.greenTeamScore
-
-        },
-        'BLUE_TEAM_SCORED': (state, action: PayloadAction<any>) => {
-            state.blueTeamScore = action.payload.blueTeamScore
+        'BLUEPLAYERINDEX_UPDATED': (state, action: PayloadAction<any>) => {
+            state.bluePlayerIndex = action.payload
         }
     }
 }
@@ -262,12 +265,150 @@ export const addName = createAsyncThunk<string, string, { state: RootState }>(
         const state = thunkApi.getState()
         const { game } = state
         const { gameId, ownTeam } = game 
-        if (!ownTeam) {
-            return thunkApi.rejectWithValue('no_own_team')
-        }
         try {
-            await databaseApi.addName(gameId, payload, ownTeam)
+            await databaseApi.addName(gameId, payload, ownTeam!)
             return 'name_added_in_database'
+        }
+        catch {
+            return thunkApi.rejectWithValue('database_down')
+        }
+    }
+)
+
+export const startPlay = createAsyncThunk<string, string, { state: RootState }>(
+    'game/startplay', async (payload, thunkApi) => {
+        const state = thunkApi.getState()
+        const { game } = state
+        const { gameId } = game 
+
+        const date = moment().format("LLLL").toString();
+        try {
+            await databaseApi.startPlay(gameId, date)
+            return 'initial_playstate_uploaded_in_database'
+        }
+        catch {
+            return thunkApi.rejectWithValue('database_down')
+        }
+    }
+)
+
+export const updateTurnOngoing = createAsyncThunk<string, boolean, { state: RootState }>(
+    'game/updateturnongoing', async (payload, thunkApi) => {
+        const state = thunkApi.getState()
+        const { game } = state
+        const { gameId } = game 
+        try {
+            await databaseApi.updateTurnOngoing(gameId, payload)
+            return 'turnOngoing_updated_in_database'
+        }
+        catch {
+            return thunkApi.rejectWithValue('database_down')
+        }
+    }
+)
+
+export const updateRound = createAsyncThunk<string, number, { state: RootState }>(
+    'game/updateturnongoing', async (payload, thunkApi) => {
+        const state = thunkApi.getState()
+        const { game } = state
+        const { gameId } = game 
+        try {
+            await databaseApi.updateRound(gameId, payload)
+            return 'round_updated_in_database'
+        }
+        catch {
+            return thunkApi.rejectWithValue('database_down')
+        }
+    }
+)
+
+export const updateTeamOnTurn = createAsyncThunk<string, string, { state: RootState }>(
+    'game/updateteamonturn', async (payload, thunkApi) => {
+        const state = thunkApi.getState()
+        const { game } = state
+        const { gameId } = game 
+        try {
+            gameActions.TEAMONTURN_UPDATED(payload)
+            await databaseApi.updateTeamOnTurn(gameId, payload)
+            return 'teamOnTurn_updated_in_database'
+        }
+        catch {
+            return thunkApi.rejectWithValue('database_down')
+        }
+    }
+)
+
+export const updatePlayerIndex = createAsyncThunk<string, string, { state: RootState }>(
+    'game/updateplayerindex', async (payload, thunkApi) => {
+        const state = thunkApi.getState()
+        const { game } = state
+        const { gameId, greenPlayerIndex, bluePlayerIndex, greenTeam, blueTeam } = game 
+        const teamOnTurn  = payload
+        
+        try {
+            if (teamOnTurn === "greenTeam") {
+                if (greenPlayerIndex === greenTeam!.length) {
+                    gameActions.GREENPLAYERINDEX_UPDATED(0)
+                    await databaseApi.updatePlayerIndex(gameId, "greenPlayerIndex", 0)
+                    return 'playerIndex_updated_in_database'
+                } else if (greenPlayerIndex === greenTeam!.length - 1) {
+                    gameActions.GREENPLAYERINDEX_UPDATED(0)
+                    await databaseApi.updatePlayerIndex(gameId, "greenPlayerIndex", 0)
+                    return 'playerIndex_updated_in_database'
+                } else {
+                    gameActions.GREENPLAYERINDEX_UPDATED(greenPlayerIndex + 1)
+                    await databaseApi.updatePlayerIndex(gameId, "greenPlayerIndex", greenPlayerIndex + 1)
+                    return 'playerIndex_updated_in_database'
+                }
+            } else {
+                if (bluePlayerIndex === blueTeam!.length) {
+                    gameActions.BLUEPLAYERINDEX_UPDATED(0)
+                    await databaseApi.updatePlayerIndex(gameId, "bluePlayerIndex", 0)
+                    return 'playerIndex_updated_in_database'
+                } else if (bluePlayerIndex === blueTeam!.length - 1) {
+                    gameActions.BLUEPLAYERINDEX_UPDATED(0)
+                    await databaseApi.updatePlayerIndex(gameId, "bluePlayerIndex", 0)
+                    return 'playerIndex_updated_in_database'
+                } else {
+                    gameActions.BLUEPLAYERINDEX_UPDATED(bluePlayerIndex + 1)
+                    await databaseApi.updatePlayerIndex(gameId, "bluePlayerIndex", bluePlayerIndex + 1)
+                }
+                return 'playerIndex_updated_in_database'
+            }
+        }
+        catch {
+            return thunkApi.rejectWithValue('database_down')
+        }
+    }
+)
+
+
+export const deleteWordFromRound = createAsyncThunk<string, string, { state: RootState }>(
+    'game/deletewordfromround', async (payload, thunkApi) => {
+        const state = thunkApi.getState()
+        const { game } = state
+        const { gameId, round } = game 
+
+        try {
+            await databaseApi.deleteWordFromRound(gameId, round, payload)
+            return 'word_deleted_in_database'
+        }
+        catch {
+            return thunkApi.rejectWithValue('database_down')
+        }
+    }
+)
+
+export const updateScore = createAsyncThunk<string, string, { state: RootState }>(
+    'game/updatescore', async (payload, thunkApi) => {
+        const state = thunkApi.getState()
+        const { game } = state
+        const { gameId, greenTeamScore, blueTeamScore} = game 
+        const ownTeam = payload
+        const ownScore = ownTeam === "greenTeam"? greenTeamScore : blueTeamScore
+        try {
+            await databaseApi.updateScore(gameId, ownTeam, ownScore+1)
+            return 'score_updated_in_database'
         }
         catch {
             return thunkApi.rejectWithValue('database_down')
@@ -287,5 +428,12 @@ export const asyncGameActions = {
     joinGame,
     subscribeToGame,
     createTeams,
-    addName
+    addName,
+    startPlay,
+    updateTurnOngoing,
+    updateRound,
+    updateTeamOnTurn,
+    updatePlayerIndex,
+    deleteWordFromRound,
+    updateScore
 }
