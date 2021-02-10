@@ -69,14 +69,12 @@ const gameSlice = createSlice({
                             }
                         break
                     case "greenPlayerIndex":
-                            if (action.payload.greenPlayerIndex) {
-                                state.greenPlayerIndex = action.payload.greenPlayerIndex
-                            }
+                                state.greenPlayerIndex = action.payload.greenPlayerIndex!
+
                         break
                     case "bluePlayerIndex":
-                            if (action.payload.bluePlayerIndex) {
-                                state.bluePlayerIndex = action.payload.bluePlayerIndex
-                            }
+                        state.bluePlayerIndex = action.payload.bluePlayerIndex!
+
                         break
                     case "greenTeamScore":
                             if (action.payload.greenTeamScore) {
@@ -338,40 +336,42 @@ export const updateTeamOnTurn = createAsyncThunk<string, string, { state: RootSt
     }
 )
 
-export const updatePlayerIndex = createAsyncThunk<string, string, { state: RootState }>(
+export const updatePlayerIndex = createAsyncThunk<string, {team: string, change: number}, { state: RootState }>(
     'game/updateplayerindex', async (payload, thunkApi) => {
         const state = thunkApi.getState()
         const { game } = state
         const { gameId, greenPlayerIndex, bluePlayerIndex, greenTeam, blueTeam } = game 
-        const teamOnTurn  = payload
-        
+        const { team, change } = payload
         try {
-            if (teamOnTurn === "greenTeam") {
-                if (greenPlayerIndex === greenTeam!.length) {
+            if (team === "greenTeam") {
+                if (greenPlayerIndex === greenTeam!.length && change > 0) {
                     gameActions.GREENPLAYERINDEX_UPDATED(0)
                     await databaseApi.updatePlayerIndex(gameId, "greenPlayerIndex", 0)
-                    return 'playerIndex_updated_in_database'
-                } else if (greenPlayerIndex === greenTeam!.length - 1) {
+                    return 'playerIndex_updated_in_database_due_to_deleted_player'
+                }
+                else
+                    if (greenPlayerIndex === greenTeam!.length - 1 && change > 0) {
                     gameActions.GREENPLAYERINDEX_UPDATED(0)
                     await databaseApi.updatePlayerIndex(gameId, "greenPlayerIndex", 0)
                     return 'playerIndex_updated_in_database'
                 } else {
-                    gameActions.GREENPLAYERINDEX_UPDATED(greenPlayerIndex + 1)
-                    await databaseApi.updatePlayerIndex(gameId, "greenPlayerIndex", greenPlayerIndex + 1)
+                    gameActions.GREENPLAYERINDEX_UPDATED(greenPlayerIndex + change)
+                    await databaseApi.updatePlayerIndex(gameId, "greenPlayerIndex", greenPlayerIndex + change)
                     return 'playerIndex_updated_in_database'
                 }
             } else {
-                if (bluePlayerIndex === blueTeam!.length) {
+                if (bluePlayerIndex === blueTeam!.length && change > 0) {
                     gameActions.BLUEPLAYERINDEX_UPDATED(0)
                     await databaseApi.updatePlayerIndex(gameId, "bluePlayerIndex", 0)
-                    return 'playerIndex_updated_in_database'
-                } else if (bluePlayerIndex === blueTeam!.length - 1) {
+                    return 'playerIndex_updated_in_database_due_to_deleted_player'
+                } else
+                    if (bluePlayerIndex === blueTeam!.length - 1 && change > 0) {
                     gameActions.BLUEPLAYERINDEX_UPDATED(0)
                     await databaseApi.updatePlayerIndex(gameId, "bluePlayerIndex", 0)
                     return 'playerIndex_updated_in_database'
                 } else {
-                    gameActions.BLUEPLAYERINDEX_UPDATED(bluePlayerIndex + 1)
-                    await databaseApi.updatePlayerIndex(gameId, "bluePlayerIndex", bluePlayerIndex + 1)
+                    gameActions.BLUEPLAYERINDEX_UPDATED(bluePlayerIndex + change)
+                    await databaseApi.updatePlayerIndex(gameId, "bluePlayerIndex", bluePlayerIndex + change)
                 }
                 return 'playerIndex_updated_in_database'
             }
@@ -392,6 +392,39 @@ export const deleteWordFromRound = createAsyncThunk<string, string, { state: Roo
         try {
             await databaseApi.deleteWordFromRound(gameId, round, payload)
             return 'word_deleted_in_database'
+        }
+        catch {
+            return thunkApi.rejectWithValue('database_down')
+        }
+    }
+)
+
+export const deleteDuplicateWord = createAsyncThunk<string, string, { state: RootState }>(
+    'game/deleteduplicateword', async (payload, thunkApi) => {
+        const state = thunkApi.getState()
+        const { game } = state
+        const { gameId } = game 
+
+        try {
+            await databaseApi.deleteDuplicateWord(gameId, payload)
+            return 'duplicate_word_deleted_in_database'
+        }
+        catch {
+            return thunkApi.rejectWithValue('database_down')
+        }
+    }
+)
+
+export const deletePlayer = createAsyncThunk<string, {team: string, players: string[]}, { state: RootState }>(
+    'game/deleteplayer', async (payload, thunkApi) => {
+        const state = thunkApi.getState()
+        const { game } = state
+        const { gameId } = game 
+        const { team, players } = payload
+
+        try {
+            await databaseApi.deletePlayer(gameId, team, players)
+            return 'player_deleted_in_database'
         }
         catch {
             return thunkApi.rejectWithValue('database_down')
@@ -435,5 +468,7 @@ export const asyncGameActions = {
     updateTeamOnTurn,
     updatePlayerIndex,
     deleteWordFromRound,
+    deleteDuplicateWord,
+    deletePlayer,
     updateScore
 }

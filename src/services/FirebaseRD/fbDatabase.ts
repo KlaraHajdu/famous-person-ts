@@ -77,7 +77,6 @@ const subscribeToGame = async (gameId: string, callback: (gameMaster:any) => voi
     const observer = (snapshot: any) => {
         callback(snapshot.val())
     }
-    console.log(gameId)
     await appFirebase.database().ref(`games/${gameId}`).on("value", observer)
 }
 
@@ -108,8 +107,8 @@ const addName = async (gameId: string, newName: string, team: string) => {
 const startPlay = async (gameId: string, date: string) => {
     await appFirebase.database().ref(`games/${gameId}/_date`).set(date)
     await appFirebase.database().ref(`games/${gameId}/teamOnTurn`).set("greenTeam")
-    await appFirebase.database().ref(`games/${gameId}/greenTeamTurnIndex`).set(0)
-    await appFirebase.database().ref(`games/${gameId}/blueTeamTurnIndex`).set(0)
+    await appFirebase.database().ref(`games/${gameId}/greenPlayerIndex`).set(0)
+    await appFirebase.database().ref(`games/${gameId}/bluePlayerIndex`).set(0)
     await appFirebase.database().ref(`games/${gameId}/round`).set(1)
     await appFirebase.database().ref(`games/${gameId}/turnOngoing`).set(false)
     const greenNames = await appFirebase
@@ -151,6 +150,19 @@ const deleteWordFromRound = async (gameId: string, round: number, word: string) 
     await appFirebase.database().ref(`games/${gameId}/round${round}/${word}`).set(false)
 }
 
+const deleteDuplicateWord = async (gameId: string, word: string) => {
+    await appFirebase.database().ref(`games/${gameId}/round1/${word}`).set(false)
+    await appFirebase.database().ref(`games/${gameId}/round2/${word}`).set(false)
+    await appFirebase.database().ref(`games/${gameId}/round3/${word}`).set(false)
+}
+
+const deletePlayer = async (gameId: string, team: string, players: string[]) => {
+    if (!players || !team || !gameId) {
+        return
+    }
+    await appFirebase.database().ref(`games/${gameId}/teams/${team}`).set(players)
+}
+
 const updateScore = async (gameId: string, team: string, updatedScore: number) => {
     await appFirebase.database().ref(`games/${gameId}/${team}Score`).set(updatedScore)
 }
@@ -172,6 +184,8 @@ export const databaseApi = {
     updateTeamOnTurn,
     updatePlayerIndex,
     deleteWordFromRound,
+    deleteDuplicateWord,
+    deletePlayer,
     updateScore
 }
   

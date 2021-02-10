@@ -16,7 +16,7 @@ export default function PlayerOnTurn(props: any) {
     const mapNumber = (number: number, in_min: number, in_max: number, out_min: number, out_max: number) => {
         return ((number - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
     };
-    const ROUND_LENGTH = 10;
+    const ROUND_LENGTH = 5;
     const [counter, setCounter] = useState(ROUND_LENGTH);
     const [turnStarted, setTurnStarted] = useState(false);
     const [counterRadius, setCounterRadius] = useState(mapNumber(counter, ROUND_LENGTH, 0, 0, 360));
@@ -40,20 +40,16 @@ export default function PlayerOnTurn(props: any) {
         }
 
         const nextTeam = teamOnTurn === "greenTeam" ? "blueTeam" : "greenTeam";
-        console.log("end of round")
         dispatch(asyncGameActions.updateTeamOnTurn(nextTeam));
-        dispatch(asyncGameActions.updatePlayerIndex(teamOnTurn));
+        dispatch(asyncGameActions.updatePlayerIndex({ team: teamOnTurn, change: 1 }));
     };
 
     useEffect(() => {
         let unmounted = false;
         let counterTimeout: NodeJS.Timeout;
-        console.log("playeronturn useffect")
-        console.log("turnStarted " + turnStarted)
         if (!unmounted) {
             if (counter === 0 && turnStarted === true) {
                 setTurnStarted(false);
-                console.log('calling end turn from playeronturn because counter 0')
                 props.endTurn();
             }
             if (counter > 0 && turnStarted) {

@@ -26,6 +26,10 @@ export default function GuessWord(props: any) {
         }
     };
 
+    const endRound = () => {
+        props.endRound();
+    };
+
     const getNewWord = () => {
         setWordDeleted(wordDeleted + 1);
     };
@@ -42,13 +46,12 @@ export default function GuessWord(props: any) {
     }, [buttonActive]);
 
     useEffect(() => {
-        console.log(allWordsInRound);
         if (allWordsInRound.length === 0) {
-            props.endRound();
+            endRound();
         }
         const randomId = Math.floor(Math.random() * allWordsInRound.length);
         setWord(allWordsInRound[randomId]);
-    }, [allWordsInRound]);
+    }, [allWordsInRound, wordDeleted]);
 
     return (
         <>
@@ -79,7 +82,7 @@ export default function GuessWord(props: any) {
                     </div>
                 </Col>
             </Row>
-            <Row>{round === 1 && <DeleteDuplicateWord wordToDelete={word} getNewWord={getNewWord} />}</Row>
+            <Row>{round === 1 && word && <DeleteDuplicateWord word={word} getNewWord={getNewWord} />}</Row>
         </>
     );
 }

@@ -37,15 +37,11 @@ function PlayGame() {
     const tone = new UIfx(toneAudio);
 
     const endTurn = async () => {
-        console.log("play game end turn fn called")
-        console.log("it is my turn: ")
-        console.log(ownName === playerOnTurn)
         dispatch(asyncGameActions.updateTurnOngoing(false));
         const nextTeam = teamOnTurn === "greenTeam" ? "blueTeam" : "greenTeam";
         dispatch(asyncGameActions.updateTeamOnTurn(nextTeam));
-        await dispatch(asyncGameActions.updatePlayerIndex(teamOnTurn));
+        dispatch(asyncGameActions.updatePlayerIndex({ team: teamOnTurn, change: 1 }));
     };
-    console.log(playerOnTurn)
 
     useEffect(() => {
         if (ownName !== gameMaster) {
@@ -79,15 +75,6 @@ function PlayGame() {
             setPlayerOnTurn(greenTeam[greenPlayerIndex]);
         } else {
             setPlayerOnTurn(blueTeam[bluePlayerIndex]);
-        }
-
-        if (ownName !== gameMaster) {
-            return;
-        }
-        if (greenPlayerIndex === greenTeam.length) {
-            dispatch(asyncGameActions.updatePlayerIndex("greenTeam"));
-        } else if (bluePlayerIndex === blueTeam.length) {
-            dispatch(asyncGameActions.updatePlayerIndex("blueTeam"));
         }
     }, [teamOnTurn, greenPlayerIndex, bluePlayerIndex, greenTeam, blueTeam, ownName, gameMaster, dispatch]);
 
