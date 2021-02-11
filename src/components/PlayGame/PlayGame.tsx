@@ -47,15 +47,20 @@ function PlayGame() {
 
     useEffect(() => {
         if (turnOngoing === "false") {
-            tone.play()
+            tone.play();
         }
-    }, [tone, turnOngoing])
+    }, [tone, turnOngoing]);
 
     useEffect(() => {
         if (ownName !== gameMaster) {
             return;
         }
-        dispatch(asyncGameActions.startPlay(""));
+        if (
+            Number(sessionStorage.getItem("greenTeamScore")) === 0 &&
+            Number(sessionStorage.getItem("blueTeamScore")) === 0
+        ) {
+            dispatch(asyncGameActions.startPlay(""));
+        }
     }, [dispatch, gameMaster, ownName]);
 
     useEffect(() => {

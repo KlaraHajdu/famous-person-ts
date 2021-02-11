@@ -39,6 +39,9 @@ const gameSlice = createSlice({
             state.gameId = action.payload.gameId
             state.ownName = action.payload.ownName
             state.gameMaster = action.payload.gameMaster
+            sessionStorage.setItem("gameId", action.payload.gameId)
+            sessionStorage.setItem("ownName", action.payload.gameMaster)
+            sessionStorage.setItem("gameMaster", action.payload.gameMaster)
             
         },
         'GAME_UPDATED': (state, action: PayloadAction<{
@@ -52,87 +55,88 @@ const gameSlice = createSlice({
 
             for (let key of Object.keys(action.payload)) {
                 switch (key) {
-                    case "gameMaster":
-                        if (action.payload.gameMaster) { 
-                            state.gameMaster = action.payload.gameMaster
-                        }
+                    case "gameMaster": 
+                        state.gameMaster = action.payload.gameMaster!
+                        sessionStorage.setItem("gameMaster", action.payload.gameMaster!)
+
                         break
                     case "round":
-                        if (action.payload.round) {
-                            state.round = action.payload.round
-                        }
+                        state.round = action.payload.round!
+                        sessionStorage.setItem("round", action.payload.round!.toString())
                         break
 
                     case "teamOnTurn":
-                            if (action.payload.teamOnTurn) {
-                                state.teamOnTurn = action.payload.teamOnTurn
-                            }
+                        state.teamOnTurn = action.payload.teamOnTurn!
+                        sessionStorage.setItem("teamOnTurn", action.payload.teamOnTurn!)
                         break
                     case "greenPlayerIndex":
-                                state.greenPlayerIndex = action.payload.greenPlayerIndex!
-
+                        state.greenPlayerIndex = action.payload.greenPlayerIndex!
+                        sessionStorage.setItem("greenPlayerIndex", action.payload.greenPlayerIndex!.toString())
                         break
                     case "bluePlayerIndex":
                         state.bluePlayerIndex = action.payload.bluePlayerIndex!
-
+                        sessionStorage.setItem("bluePlayerIndex", action.payload.bluePlayerIndex!.toString())
                         break
                     case "greenTeamScore":
-                            if (action.payload.greenTeamScore) {
-                                state.greenTeamScore = action.payload.greenTeamScore
-                            }
+                        state.greenTeamScore = action.payload.greenTeamScore!
+                        sessionStorage.setItem("greenTeamScore", action.payload.greenTeamScore!.toString())
                         break
                     case "blueTeamScore":
-                            if (action.payload.blueTeamScore) {
-                                state.blueTeamScore = action.payload.blueTeamScore
-                            }
+                        state.blueTeamScore = action.payload.blueTeamScore!
+                        sessionStorage.setItem("blueTeamScore", action.payload.blueTeamScore!.toString())
                         break
                     case "turnOngoing":
-                            if (action.payload.turnOngoing) {
-                                state.turnOngoing = action.payload.turnOngoing
-                            }
+                        state.turnOngoing = action.payload.turnOngoing!
+                        sessionStorage.setItem("turnOngoing", action.payload.turnOngoing!.toString())
                         break
                     case "players":
-                            if (action.payload.players) {
-                                state.players = Object.keys(action.payload.players)
-                            }
+                        state.players = Object.keys(action.payload.players!)
+                        sessionStorage.setItem("players", Object.keys(action.payload.players!).join(","))
                         break
                     case "teams":
-                            if (action.payload.teams) {
-                                state.greenTeam = Object.values(action.payload.teams.greenTeam)
-                                state.blueTeam = Object.values(action.payload.teams.blueTeam)
-                                if (state.ownName && state.greenTeam.includes(state.ownName)) {
-                                    state.ownTeam = "greenTeam"
-                                }
-                                else {
-                                    state.ownTeam = "blueTeam"
-                                }
-                                
-                            }
+                        state.greenTeam = Object.values(action.payload.teams!.greenTeam)
+                        sessionStorage.setItem("greenTeam", (Object.values(action.payload.teams!.greenTeam).join(",")))
+                        state.blueTeam = Object.values(action.payload.teams!.blueTeam)
+                        sessionStorage.setItem("blueTeam",  (Object.values(action.payload.teams!.blueTeam).join(",")))
+
+                        if (state.ownName && state.greenTeam.includes(state.ownName)) {
+                            state.ownTeam = "greenTeam"
+                            sessionStorage.setItem("ownTeam", "greenTeam")
+                        }
+                        else {
+                            state.ownTeam = "blueTeam"
+                            sessionStorage.setItem("ownTeam", "blueTeam")
+                        }
                         break
                     case "names":
-                        if (action.payload.names && action.payload.names.greenTeam) {
-                            Object.keys(action.payload.names.greenTeam).forEach((n) => {
+                        if (action.payload.names!.greenTeam) {
+                            Object.keys(action.payload.names!.greenTeam!).forEach((n) => {
                                 if (!state.names.greenTeam.includes(n)) {
                                     state.names.greenTeam.push(n)
                                 }
                             })
+                            sessionStorage.setItem("greenTeamNames", state.names.greenTeam.join(","))
                         }
-                        if (action.payload.names && action.payload.names.blueTeam) {
-                            Object.keys(action.payload.names.blueTeam).forEach((n) => {
+                        if (action.payload.names!.blueTeam) {
+                            Object.keys(action.payload.names!.blueTeam).forEach((n) => {
                                 if (!state.names.blueTeam.includes(n)) {
                                     state.names.blueTeam.push(n)
                                 }
                             })
+                            sessionStorage.setItem("blueTeamNames", state.names.blueTeam.join(","))
                         }    
                         break
                     case "round1":
                         state.round1Names = Object.entries(action.payload.round1!).filter(([key, value]) => value).map((arr) => arr[0])
+                        sessionStorage.setItem("round1Names", state.round1Names.join(","))
                         break
                     case "round2":
                         state.round2Names = Object.entries(action.payload.round2!).filter(([key, value]) => value).map((arr) => arr[0])
+                        sessionStorage.setItem("round2Names", state.round2Names.join(","))
                         break
                     case "round3":
                         state.round3Names = Object.entries(action.payload.round3!).filter(([key, value]) => value).map((arr) => arr[0])
+                        sessionStorage.setItem("round3Names", state.round3Names.join(","))
                         break
                 }
             }
@@ -140,15 +144,20 @@ const gameSlice = createSlice({
         'GAME_JOINED': (state, action: PayloadAction<any>) => {
             state.gameId = action.payload.gameId
             state.ownName = action.payload.ownName
+            sessionStorage.setItem("gameId", action.payload.gameId)
+            sessionStorage.setItem("ownName", action.payload.ownName)
         },
         'TEAMONTURN_UPDATED': (state, action: PayloadAction<any>) => {
             state.teamOnTurn = action.payload.teamOnTurn
+            sessionStorage.setItem("teamOnTurn", action.payload.teamOnTurn)
         },
         'GREENPLAYERINDEX_UPDATED': (state, action: PayloadAction<any>) => {
             state.greenPlayerIndex = action.payload
+            sessionStorage.setItem("greenPlayerIndex", action.payload)
         },
         'BLUEPLAYERINDEX_UPDATED': (state, action: PayloadAction<any>) => {
             state.bluePlayerIndex = action.payload
+            sessionStorage.setItem("bluePlayerIndex", action.payload)
         }
     }
 }
@@ -184,8 +193,6 @@ export const createNewGame = createAsyncThunk<string, {gameId: string, gameMaste
             const newGame = { gameId, gameMaster, ownName: gameMaster }
             await databaseApi.createNewGame(gameId, gameMaster)
             thunkApi.dispatch(gameActions.GAME_CREATED(newGame))
-            sessionStorage.setItem("gameMaster", payload.gameMaster)
-            sessionStorage.setItem("ownName", payload.gameMaster)
             return 'new_game_created'
         }
         catch {
