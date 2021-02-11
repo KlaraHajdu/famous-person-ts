@@ -1,17 +1,22 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { Badge } from "react-bootstrap";
-import { ReactComponent as Balloon } from "../../static/1524086080.svg";
+import {
+    StyledBalloon as Balloon,
+    StyledBadge as Badge,
+    MainTile,
+    Container,
+    ResultsContainer,
+    TitleContainer,
+} from "./styled";
 import { useSelector } from "react-redux";
 import { selectBlueTeamScore, selectGreenTeamScore, selectOwnTeam } from "../../store/slices/game/gameSelector";
-import { MainTile } from "../../Theme/theme";
 
 export default function EndGame() {
     const [winnerTeam, setWinnerTeam] = useState<string>("");
     const [iAmWinner, setIAmWinner] = useState<boolean | null>(null);
-    const [balloonTop1, setBalloonTop1] = useState(410);
-    const [balloonTop2, setBalloonTop2] = useState(390);
-    const [balloonTop3, setBalloonTop3] = useState(410);
+    const [balloonTop1, setBalloonTop1] = useState<number>(410);
+    const [balloonTop2, setBalloonTop2] = useState<number>(390);
+    const [balloonTop3, setBalloonTop3] = useState<number>(410);
     const blueTeamScore = useSelector(selectBlueTeamScore);
     const greenTeamScore = useSelector(selectGreenTeamScore);
     const ownTeam = useSelector(selectOwnTeam);
@@ -71,107 +76,65 @@ export default function EndGame() {
 
     if (blueTeamScore === greenTeamScore) {
         return (
-            <MainTile style={{ zIndex: "0" }}>
-                <h4 style={{ alignSelf: "center", textAlign: "center", flex: 1 }}>("It is a draw!")</h4>
+            <MainTile>
+                <Container>
+                    <TitleContainer>
+                        <h4>It is a draw!</h4>
+                    </TitleContainer>
+                </Container>
             </MainTile>
         );
     }
 
     if (iAmWinner) {
         return (
-            <div>
-                <React.Fragment>
-                    <h4 style={{ alignSelf: "center", textAlign: "center", flex: 1 }}>
-                        {" "}
-                        The{" "}
-                        <Badge
-                            variant={blueTeamScore > greenTeamScore ? "primary" : "success"}
-                            // style={{ topPadding: 20, alignSelf: "center", textAlign: "center", flex: 1 }}
-                        >
-                            {winnerTeam}
-                        </Badge>{" "}
-                        has won!
-                    </h4>
-                    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: 20 }}>
-                        <Badge variant="primary" style={{ marginRight: 3 }}>
-                            {" "}
-                            {blueTeamScore}
-                        </Badge>{" "}
-                        :{" "}
-                        <Badge variant="success" style={{ marginLeft: 3 }}>
-                            {" "}
-                            {greenTeamScore}
-                        </Badge>{" "}
-                    </div>
-                </React.Fragment>
-                <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: 30 }}>
-                    <React.Fragment>
-                        <h3>Congratulations!</h3>
-                        <div>
-                            <Balloon
-                                id="balloon1"
-                                // style={{
-                                //     top: `${balloonTop1}`,
-                                //     height: "300",
-                                //     position: "absolute",
-                                //     zIndex: "1",
-                                //     left: "20%",
-                                //     width: "120",
-                                // }}
-                            />
-                            <Balloon
-                                id="balloon2"
-                                // style={{
-                                //     top: `${balloonTop2}`,
-                                //     height: "300",
-                                //     position: "absolute",
-                                //     zIndex: "1",
-                                //     left: "47%",
-                                //     width: "120",
-                                // }}
-                            />
-                            <Balloon
-                                id="balloon3"
-                                // style={{
-                                //     top: `${balloonTop3}`,
-                                //     height: "300",
-                                //     position: "absolute",
-                                //     zIndex: "1",
-                                //     left: "73%",
-                                //     width: "120",
-                                // }}
-                            />
-                        </div>
-                    </React.Fragment>
-                </div>
-            </div>
+            <>
+                <MainTile>
+                    <Container>
+                        <TitleContainer>
+                            The{" "}
+                            <Badge variant={blueTeamScore > greenTeamScore ? "primary" : "success"}>{winnerTeam}</Badge>{" "}
+                            has won!
+                        </TitleContainer>
+                        <ResultsContainer>
+                            <Badge variant="primary"> {blueTeamScore} </Badge> :
+                            <Badge variant="success"> {greenTeamScore} </Badge>
+                        </ResultsContainer>
+                        <TitleContainer>Congratulations! </TitleContainer>
+                    </Container>
+                </MainTile>
+                <Balloon balloonTop={balloonTop1} left="20" />
+                <Balloon balloonTop={balloonTop2} left="47" />
+                <Balloon balloonTop={balloonTop3} left="73" />
+            </>
         );
     }
 
     return (
-        <React.Fragment>
-            <h4 style={{ alignSelf: "center", textAlign: "center", flex: 1 }}>
-                {" "}
-                The{" "}
-                <Badge
-                    variant={blueTeamScore > greenTeamScore ? "primary" : "success"}
-                    // style={{ topPadding: 20, alignSelf: "center", textAlign: "center", flex: 1 }}
-                >
-                    {winnerTeam}
-                </Badge>{" "}
-                has won!
-            </h4>
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: 20 }}>
-                <Badge variant="primary" style={{ marginRight: 3 }}>
-                    {" "}
-                    {blueTeamScore}
-                </Badge>{" "}
-                :{" "}
-                <Badge variant="success" style={{ marginLeft: 3 }}>
-                    {" "}
-                    {greenTeamScore}
-                </Badge>{" "}
-            </div>
-        </React.Fragment>
+        <MainTile>
+            <Container>
+                <h4>
+                    The{" "}
+                    <Badge
+                        variant={blueTeamScore > greenTeamScore ? "primary" : "success"}
+                        // style={{ topPadding: 20, alignSelf: "center", textAlign: "center", flex: 1 }}
+                    >
+                        {winnerTeam}
+                    </Badge>{" "}
+                    has won!
+                </h4>
+                <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: 20 }}>
+                    <Badge variant="primary" style={{ marginRight: 3 }}>
+                        {" "}
+                        {blueTeamScore}
+                    </Badge>{" "}
+                    :{" "}
+                    <Badge variant="success" style={{ marginLeft: 3 }}>
+                        {" "}
+                        {greenTeamScore}
+                    </Badge>{" "}
+                </div>
+            </Container>
+        </MainTile>
     );
 }
