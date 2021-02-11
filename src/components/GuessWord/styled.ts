@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import Row from "react-bootstrap/Row";
 
 export const Container = styled.div`
     display:flex;
@@ -16,9 +15,6 @@ export const DuplicateContainer = styled.div`
     justify-content: center;
 `
 
-export const StyledRow = styled(Row)`
-    padding-top: 10px;
-`
 export const WordBadge = styled.span`
     display: flex; 
     flex-wrap: wrap;  

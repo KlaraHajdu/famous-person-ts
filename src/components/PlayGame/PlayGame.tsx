@@ -12,6 +12,7 @@ import {
     selectOwnName,
     selectRound,
     selectTeamOnTurn,
+    selectTurnOngoing,
 } from "../../store/slices/game/gameSelector";
 import { asyncGameActions } from "../../store/slices/game/slice";
 import toneAudio from "../../static/tone.mp3";
@@ -30,6 +31,7 @@ function PlayGame() {
     const bluePlayerIndex = useSelector(selectBluePlayerIndex);
     const greenPlayerIndex = useSelector(selectGreenPlayerIndex);
     const teamOnTurn = useSelector(selectTeamOnTurn);
+    const turnOngoing = useSelector(selectTurnOngoing);
     const [subTitle, setSubTitle] = useState<string>("");
     const [playerOnTurn, setPlayerOnTurn] = useState<string>("");
     const [canDelete, setCanDelete] = useState<boolean>(false);
@@ -42,6 +44,12 @@ function PlayGame() {
         dispatch(asyncGameActions.updateTeamOnTurn(nextTeam));
         dispatch(asyncGameActions.updatePlayerIndex({ team: teamOnTurn, change: 1 }));
     };
+
+    useEffect(() => {
+        if (turnOngoing === "false") {
+            tone.play()
+        }
+    }, [tone, turnOngoing])
 
     useEffect(() => {
         if (ownName !== gameMaster) {

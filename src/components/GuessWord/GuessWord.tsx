@@ -4,7 +4,7 @@ import Button from "react-bootstrap/Button";
 import { selectAllWordsInRound, selectOwnTeam, selectRound } from "../../store/slices/game/gameSelector";
 import { asyncGameActions } from "../../store/slices/game/slice";
 import DeleteDuplicateWord from "../DeleteDuplicateWord/DeleteDuplicateWord";
-import { WordBadge, StyledRow as Container, WordContainer, DuplicateContainer } from "./styled";
+import { WordBadge, Container, WordContainer, DuplicateContainer } from "./styled";
 
 export default function GuessWord(props: any) {
     const [word, setWord] = useState<string | undefined>();
