@@ -8,10 +8,9 @@ import {
     selectGameMaster,
     selectGreenPlayerIndex,
     selectGreenTeam,
-    selectRound,
 } from "../../store/slices/game/gameSelector";
 import { asyncGameActions } from "../../store/slices/game/slice";
-import { StyledTable } from "./styled";
+import { StyledTable, StyledTd } from "./styled";
 
 export default function DeletePlayer(props: any) {
     const greenTeam = useSelector(selectGreenTeam);
@@ -98,21 +97,17 @@ export default function DeletePlayer(props: any) {
     return (
         <div>
             <StyledTable striped bordered size="sm">
-                <colgroup>
-                    <col></col>
-                    <col style={{ width: "10%" }}></col>
-                </colgroup>
                 <tbody>
                     {filteredGreenPlayers &&
                         filteredGreenPlayers.map((player, index) => {
                             return (
                                 <tr key={index}>
                                     <td> {player}</td>
-                                    <td style={{ width: "40" }}>
+                                    <StyledTd>
                                         <Button variant="danger" onClick={() => confirmGreenPlayerDelete(player)}>
                                             Delete
                                         </Button>
-                                    </td>
+                                    </StyledTd>
                                 </tr>
                             );
                         })}

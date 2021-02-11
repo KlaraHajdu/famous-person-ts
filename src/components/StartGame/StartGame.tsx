@@ -1,9 +1,9 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import { getRandomNumberFromTo } from "../../utils/randomUtil";
-import { useDispatch } from "react-redux";
 import { asyncGameActions } from "../../store/slices/game/slice";
+import { getRandomNumberFromTo } from "../../utils/randomUtil";
 import { MainTile } from "../../Theme/theme";
 
 export default function StartGame() {

@@ -1,14 +1,14 @@
 import React, { useEffect } from "react";
-import NameInputForm from "../NameInputForm/NameInputForm";
-import PhaseHeader from "../PhaseHeader/PhaseHeader";
+import { useSelector, useDispatch } from "react-redux";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import TeamContainer from "../TeamContainer/TeamContainer";
-import { MiddleContainerInThreeColumns } from "./styled";
-import { useSelector, useDispatch } from "react-redux";
 import { selectAllNames, selectGameMaster, selectOwnName } from "../../store/slices/game/gameSelector";
 import { asyncGamePhaseActions } from "../../store/slices/gamePhase/slice";
+import NameInputForm from "../NameInputForm/NameInputForm";
+import PhaseHeader from "../PhaseHeader/PhaseHeader";
+import TeamContainer from "../TeamContainer/TeamContainer";
 import GamePhase from "../../types/GamePhase";
+import { MiddleContainerInThreeColumns } from "./styled";
 
 function AddNames() {
     const NUMBER_OF_NAMES_TO_START_GAME = 2;
@@ -29,7 +29,7 @@ function AddNames() {
 
     return (
         <div>
-            <Row style={{ width: "100vw" }}>
+            <Row>
                 <Col xs={12} md={3}>
                     <TeamContainer team="blueTeam" />
                 </Col>

@@ -1,13 +1,14 @@
 import React, { useRef } from "react";
-import { Button, Col } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import Dialog from "react-bootstrap-dialog";
 import { useDispatch } from "react-redux";
 import { asyncGameActions } from "../../store/slices/game/slice";
+import { Container } from "./styled";
 
 type DeleteDuplicateProps = {
-    word: string,
-    getNewWord: () => void
-}
+    word: string;
+    getNewWord: () => void;
+};
 
 export default function DeleteDuplicateWord(props: DeleteDuplicateProps) {
     let dialog = useRef<Dialog>(null);
@@ -20,7 +21,7 @@ export default function DeleteDuplicateWord(props: DeleteDuplicateProps) {
     });
 
     const deleteDuplicateWord = () => {
-        console.group(props.word)
+        console.group(props.word);
         dispatch(asyncGameActions.deleteDuplicateWord(props.word));
     };
 
@@ -41,12 +42,8 @@ export default function DeleteDuplicateWord(props: DeleteDuplicateProps) {
     };
 
     return (
-        <Col>
-            <Button
-                variant="outline-primary"
-                style={{ height: 36, marginLeft: 20 }}
-                onClick={() => confirmDeleteWord()}
-            >
+        <Container>
+            <Button variant="outline-primary" onClick={() => confirmDeleteWord()}>
                 Delete duplicate
             </Button>
             <Dialog
@@ -56,6 +53,6 @@ export default function DeleteDuplicateWord(props: DeleteDuplicateProps) {
                     }
                 }}
             />
-        </Col>
+        </Container>
     );
 }

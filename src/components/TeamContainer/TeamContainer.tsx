@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { TeamContainerInThreeColumns } from "./styled";
 import { useSelector } from "react-redux";
 import {
     selectBlueTeam,
@@ -7,6 +6,7 @@ import {
     selectGreenTeam,
     selectGreenTeamScore,
 } from "../../store/slices/game/gameSelector";
+import { TeamContainerInThreeColumns } from "./styled";
 
 type TeamType = {
     team: string;

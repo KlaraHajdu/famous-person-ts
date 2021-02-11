@@ -1,15 +1,8 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import {
-    StyledBalloon as Balloon,
-    StyledBadge as Badge,
-    MainTile,
-    Container,
-    ResultsContainer,
-    TitleContainer,
-} from "./styled";
 import { useSelector } from "react-redux";
 import { selectBlueTeamScore, selectGreenTeamScore, selectOwnTeam } from "../../store/slices/game/gameSelector";
+import { StyledBalloon as Balloon, StyledBadge as Badge, MainTile, ResultsContainer, TitleContainer } from "./styled";
 
 export default function EndGame() {
     const [winnerTeam, setWinnerTeam] = useState<string>("");
@@ -36,7 +29,7 @@ export default function EndGame() {
         } else {
             setIAmWinner(false);
         }
-    }, [winnerTeam]);
+    }, [ownTeam, winnerTeam]);
 
     useEffect(() => {
         setTimeout(
@@ -77,64 +70,33 @@ export default function EndGame() {
     if (blueTeamScore === greenTeamScore) {
         return (
             <MainTile>
-                <Container>
-                    <TitleContainer>
-                        <h4>It is a draw!</h4>
-                    </TitleContainer>
-                </Container>
+                <TitleContainer>
+                    <h4>It is a draw!</h4>
+                </TitleContainer>
             </MainTile>
         );
     }
 
-    if (iAmWinner) {
-        return (
-            <>
-                <MainTile>
-                    <Container>
-                        <TitleContainer>
-                            The{" "}
-                            <Badge variant={blueTeamScore > greenTeamScore ? "primary" : "success"}>{winnerTeam}</Badge>{" "}
-                            has won!
-                        </TitleContainer>
-                        <ResultsContainer>
-                            <Badge variant="primary"> {blueTeamScore} </Badge> :
-                            <Badge variant="success"> {greenTeamScore} </Badge>
-                        </ResultsContainer>
-                        <TitleContainer>Congratulations! </TitleContainer>
-                    </Container>
-                </MainTile>
-                <Balloon balloonTop={balloonTop1} left="20" />
-                <Balloon balloonTop={balloonTop2} left="47" />
-                <Balloon balloonTop={balloonTop3} left="73" />
-            </>
-        );
-    }
-
     return (
-        <MainTile>
-            <Container>
-                <h4>
-                    The{" "}
-                    <Badge
-                        variant={blueTeamScore > greenTeamScore ? "primary" : "success"}
-                        // style={{ topPadding: 20, alignSelf: "center", textAlign: "center", flex: 1 }}
-                    >
-                        {winnerTeam}
-                    </Badge>{" "}
-                    has won!
-                </h4>
-                <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: 20 }}>
-                    <Badge variant="primary" style={{ marginRight: 3 }}>
-                        {" "}
-                        {blueTeamScore}
-                    </Badge>{" "}
-                    :{" "}
-                    <Badge variant="success" style={{ marginLeft: 3 }}>
-                        {" "}
-                        {greenTeamScore}
-                    </Badge>{" "}
-                </div>
-            </Container>
-        </MainTile>
+        <>
+            <MainTile>
+                <TitleContainer>
+                    The <Badge variant={blueTeamScore > greenTeamScore ? "primary" : "success"}>{winnerTeam}</Badge> has
+                    won!
+                </TitleContainer>
+                <ResultsContainer>
+                    <Badge variant="primary"> {blueTeamScore} </Badge> :
+                    <Badge variant="success"> {greenTeamScore} </Badge>
+                </ResultsContainer>
+                {iAmWinner && <TitleContainer>Congratulations! </TitleContainer>}
+            </MainTile>
+            {iAmWinner && (
+                <>
+                    <Balloon balloonTop={balloonTop1} left="20" />
+                    <Balloon balloonTop={balloonTop2} left="47" />
+                    <Balloon balloonTop={balloonTop3} left="73" />
+                </>
+            )}
+        </>
     );
 }

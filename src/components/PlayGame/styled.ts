@@ -11,7 +11,8 @@ export const MiddleContainerInThreeColumns = styled.div`
 `
 
 export const StyledBadge = styled(Badge)<{ team: string }>`
-    variant: ${(prop: { team: string; }) => prop.team === "greenTeam"?  "success" : "primary"}
+    background-color: ${(prop: { team: string; }) => prop.team === "greenTeam" ? gameTheme.greenBackgroundColor : gameTheme.blueBackgroundColor}
+
 
 `
 export const StyledSpan = styled.span`

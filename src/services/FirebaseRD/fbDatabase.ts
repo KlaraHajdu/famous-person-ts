@@ -1,6 +1,6 @@
 import firebase from "firebase";
-import GamePhase from "../../types/GamePhase";
 import { firebaseConfig } from "./firebaseConfig";
+import GamePhase from "../../types/GamePhase";
 
 export let appFirebase: any = {}; 
 firebase.initializeApp(firebaseConfig);

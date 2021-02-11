@@ -1,13 +1,10 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
-import Badge from "react-bootstrap/Badge";
-import DeleteDuplicateWord from "../DeleteDuplicateWord/DeleteDuplicateWord";
 import { selectAllWordsInRound, selectOwnTeam, selectRound } from "../../store/slices/game/gameSelector";
 import { asyncGameActions } from "../../store/slices/game/slice";
+import DeleteDuplicateWord from "../DeleteDuplicateWord/DeleteDuplicateWord";
+import { WordBadge, StyledRow as Container, WordContainer, DuplicateContainer } from "./styled";
 
 export default function GuessWord(props: any) {
     const [word, setWord] = useState<string | undefined>();
@@ -54,35 +51,14 @@ export default function GuessWord(props: any) {
     }, [allWordsInRound, wordDeleted]);
 
     return (
-        <>
-            <Row>
-                <Col>
-                    <h2>
-                        <div
-                            style={{
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                alignSelf: "center",
-                            }}
-                        >
-                            <Badge style={{ height: 36 }} variant="warning">
-                                {word}
-                            </Badge>
-                        </div>
-                    </h2>
-                </Col>
-                <Col>
-                    <div
-                        style={{ display: "flex", justifyContent: "center", alignItems: "center", alignSelf: "center" }}
-                    >
-                        <Button style={{ height: 36 }} onClick={scoreWordGuessed}>
-                            Guessed
-                        </Button>
-                    </div>
-                </Col>
-            </Row>
-            <Row>{round === 1 && word && <DeleteDuplicateWord word={word} getNewWord={getNewWord} />}</Row>
-        </>
+        <Container>
+            <WordContainer>
+                <WordBadge>{word}</WordBadge>
+                <Button onClick={scoreWordGuessed}>Guessed</Button>
+            </WordContainer>
+            <DuplicateContainer>
+                {round === 1 && word && <DeleteDuplicateWord word={word} getNewWord={getNewWord} />}
+            </DuplicateContainer>
+        </Container>
     );
 }

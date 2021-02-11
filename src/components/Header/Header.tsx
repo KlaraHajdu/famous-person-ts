@@ -5,16 +5,14 @@ import Nav from "react-bootstrap/Nav";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import { useSelector, useDispatch } from "react-redux";
 import { selectGameId } from "../../store/slices/game/gameSelector";
-import { selectGamePhase } from "../../store/slices/gamePhase/gamePhaseSelector";
 import { asyncGamePhaseActions, gamePhaseActions } from "../../store/slices/gamePhase/slice";
-import GamePhase from "../../types/GamePhase";
-import { Styles } from "./styled";
-import HowToPlay from "../HowToPlay/HowToPlay";
 import { asyncGameActions } from "../../store/slices/game/slice";
+import GamePhase from "../../types/GamePhase";
+import HowToPlay from "../HowToPlay/HowToPlay";
+import { Styles } from "./styled";
 
 export default function Header() {
     const gameId: string = useSelector(selectGameId);
-    const gamePhase = useSelector(selectGamePhase);
     const dispatch = useDispatch();
 
     const startGameAsMaster = () => {

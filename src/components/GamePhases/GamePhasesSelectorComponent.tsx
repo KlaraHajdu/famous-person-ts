@@ -7,7 +7,7 @@ import { gamePhases as gamePhasesObject } from "./gamePhaseObject";
 function GamePhasesSelectorComponent() {
     const gamePhase: GamePhase = useSelector(selectGamePhase);
 
-    return gamePhase && <div>{gamePhasesObject[gamePhase].component}</div>;
+    return gamePhase && <>{gamePhasesObject[gamePhase].component}</>;
 }
 
 export default GamePhasesSelectorComponent;

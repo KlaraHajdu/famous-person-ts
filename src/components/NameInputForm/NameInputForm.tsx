@@ -1,7 +1,7 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import { useSelector, useDispatch } from "react-redux";
 import { selectBlueTeamNames, selectGreenTeamNames, selectOwnTeam } from "../../store/slices/game/gameSelector";
 import { asyncGameActions } from "../../store/slices/game/slice";
 
@@ -18,7 +18,7 @@ export default function NameInputForm(props: { numberOfNames: number }) {
     const saveNameToSubmit = (event: ChangeEvent<HTMLInputElement>) => {
         let name = event.target.value;
         if (name.length > 20) setHelperText("Name too long!");
-        if (name.length === 0) {
+        else if (name.length === 0) {
             setHelperText("Please give a name!");
             setNameToSubmit("");
         } else {
@@ -55,11 +55,9 @@ export default function NameInputForm(props: { numberOfNames: number }) {
         );
 
     return (
-        <div>
-            <div>
-                Your team has added {namesSubmittedByTeam} {namesSubmittedByTeam > 1 ? "names" : "name"} from the{" "}
-                {numberOfNames / 2}.
-            </div>
+        <>
+            Your team has added {namesSubmittedByTeam} {namesSubmittedByTeam > 1 ? "names" : "name"} from the{" "}
+            {numberOfNames / 2}.
             <Form>
                 <Form.Group controlId="formPlayerName">
                     <Form.Control
@@ -75,6 +73,6 @@ export default function NameInputForm(props: { numberOfNames: number }) {
                     Submit name
                 </Button>
             </Form>
-        </div>
+        </>
     );
 }

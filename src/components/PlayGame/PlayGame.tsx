@@ -1,14 +1,8 @@
 import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import UIfx from "uifx";
-import toneAudio from "../../static/tone.mp3";
-import PhaseHeader from "../PhaseHeader/PhaseHeader";
-import TeamContainer from "../TeamContainer/TeamContainer";
-import PlayerOnTurn from "../PlayerOnTurn/PlayerOnTurn";
-import { MiddleContainerInThreeColumns, StyledBadge, StyledDiv, StyledSpan } from "./styled";
-import PlayGameMaster from "../PlayGameMaster/PlayGameMaster";
-import { useSelector, useDispatch } from "react-redux";
 import {
     selectBluePlayerIndex,
     selectBlueTeam,
@@ -19,7 +13,13 @@ import {
     selectRound,
     selectTeamOnTurn,
 } from "../../store/slices/game/gameSelector";
-import { asyncGameActions, gameActions } from "../../store/slices/game/slice";
+import { asyncGameActions } from "../../store/slices/game/slice";
+import toneAudio from "../../static/tone.mp3";
+import PhaseHeader from "../PhaseHeader/PhaseHeader";
+import TeamContainer from "../TeamContainer/TeamContainer";
+import PlayerOnTurn from "../PlayerOnTurn/PlayerOnTurn";
+import PlayGameMaster from "../PlayGameMaster/PlayGameMaster";
+import { MiddleContainerInThreeColumns, StyledBadge, StyledDiv, StyledSpan } from "./styled";
 
 function PlayGame() {
     const greenTeam = useSelector(selectGreenTeam);
@@ -86,15 +86,11 @@ function PlayGame() {
             <Col xs={12} md={6}>
                 <MiddleContainerInThreeColumns>
                     <PhaseHeader title="" subtitle={subTitle} />
-                    <div>
-                        The{" "}
-                        <StyledBadge team={teamOnTurn}>
-                            {teamOnTurn === "greenTeam" ? "green" : "blue"} team
-                        </StyledBadge>{" "}
-                        is guessing. It is <StyledSpan> {playerOnTurn} </StyledSpan>'s turn now.
-                    </div>
+                    The{" "}
+                    <StyledBadge team={teamOnTurn}>{teamOnTurn === "greenTeam" ? "green" : "blue"} team</StyledBadge> is
+                    guessing. It is <StyledSpan> {playerOnTurn} </StyledSpan>'s turn now.
                     <StyledDiv>{ownName === playerOnTurn && <PlayerOnTurn endTurn={endTurn} />}</StyledDiv>
-                    <div>{canDelete && <PlayGameMaster />}</div>
+                    {canDelete && <PlayGameMaster />}
                 </MiddleContainerInThreeColumns>
             </Col>
             <Col xs={12} md={3}>

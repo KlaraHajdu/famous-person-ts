@@ -2,21 +2,19 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Button from "react-bootstrap/Button";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import { CounterStyle, CountdownItemStyle } from "./styled";
-import GuessWord from "../GuessWord/GuessWord";
-import SvgCircle from "../SvgCircle/SvgCircle";
 import { selectRound, selectTeamOnTurn } from "../../store/slices/game/gameSelector";
 import { asyncGameActions } from "../../store/slices/game/slice";
 import { asyncGamePhaseActions } from "../../store/slices/gamePhase/slice";
 import GamePhase from "../../types/GamePhase";
+import GuessWord from "../GuessWord/GuessWord";
+import { CounterStyle, CountdownItemStyle, StyledRow as Row, Container } from "./styled";
+import SvgCircle from "../SvgCircle/SvgCircle";
 
 export default function PlayerOnTurn(props: any) {
     const mapNumber = (number: number, in_min: number, in_max: number, out_min: number, out_max: number) => {
         return ((number - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
     };
-    const ROUND_LENGTH = 5;
+    const ROUND_LENGTH = 60;
     const [counter, setCounter] = useState(ROUND_LENGTH);
     const [turnStarted, setTurnStarted] = useState(false);
     const [counterRadius, setCounterRadius] = useState(mapNumber(counter, ROUND_LENGTH, 0, 0, 360));
@@ -63,40 +61,24 @@ export default function PlayerOnTurn(props: any) {
     }, [turnStarted, counter, props]);
 
     return (
-        <div>
+        <>
             <Row>
-                <Col>
-                    <h4>It is your turn!</h4>
-                </Col>
-                <Col style={{ height: 60 }}>
-                    <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                        {turnStarted ? (
-                            ""
-                        ) : (
-                            <Button style={{ width: 140 }} onClick={startTurn}>
-                                Start your turn
-                            </Button>
-                        )}
-                    </div>
-                </Col>
+                <h4>It is your turn!</h4>
+                <Container>{turnStarted ? "" : <Button onClick={startTurn}>Start your turn</Button>}</Container>
             </Row>
-            <Row className="justify-content-md-center">
+            <Row>
                 {ROUND_LENGTH >= counter && counter > 0 && turnStarted && <GuessWord endRound={endRound} />}
             </Row>
-            <Row className="justify-content-md-center">
-                <div>
-                    {counter && (
-                        <div>
-                            <CountdownItemStyle>
-                                <SvgCircle radius={counterRadius} />
-                                <CounterStyle>
-                                    <h1>{counter}</h1>
-                                </CounterStyle>
-                            </CountdownItemStyle>
-                        </div>
-                    )}
-                </div>
+            <Row>
+                {counter && (
+                    <CountdownItemStyle>
+                        <SvgCircle radius={counterRadius} />
+                        <CounterStyle>
+                            <h1>{counter}</h1>
+                        </CounterStyle>
+                    </CountdownItemStyle>
+                )}
             </Row>
-        </div>
+        </>
     );
 }
