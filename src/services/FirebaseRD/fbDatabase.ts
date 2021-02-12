@@ -5,7 +5,7 @@ import GamePhase from "../../types/GamePhase";
 export let appFirebase: any = {}; 
 firebase.initializeApp(firebaseConfig);
 appFirebase = firebase;
-firebase.analytics(); 
+// firebase.analytics(); 
 
 const checkIfGameIdExists = async (gameId: string) => {
      const response = await appFirebase

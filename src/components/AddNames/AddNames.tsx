@@ -4,6 +4,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { selectAllNames, selectGameMaster, selectOwnName } from "../../store/slices/game/gameSelector";
 import { asyncGamePhaseActions } from "../../store/slices/gamePhase/slice";
+import constants from "../../constants";
 import NameInputForm from "../NameInputForm/NameInputForm";
 import PhaseHeader from "../PhaseHeader/PhaseHeader";
 import TeamContainer from "../TeamContainer/TeamContainer";
@@ -11,7 +12,7 @@ import GamePhase from "../../types/GamePhase";
 import { MiddleContainerInThreeColumns } from "./styled";
 
 function AddNames() {
-    const NUMBER_OF_NAMES_TO_START_GAME = 2;
+    const NUMBER_OF_NAMES_TO_START_GAME = constants.NUMBER_OF_NAMES_TO_START_GAME;
     const namesSubmitted = useSelector(selectAllNames);
     const ownName = useSelector(selectOwnName)
     const gameMaster = useSelector(selectGameMaster)

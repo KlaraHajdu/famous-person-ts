@@ -5,6 +5,7 @@ import Button from "react-bootstrap/Button";
 import { selectRound, selectTeamOnTurn } from "../../store/slices/game/gameSelector";
 import { asyncGameActions } from "../../store/slices/game/slice";
 import { asyncGamePhaseActions } from "../../store/slices/gamePhase/slice";
+import constants from "../../constants";
 import GamePhase from "../../types/GamePhase";
 import GuessWord from "../GuessWord/GuessWord";
 import { CounterStyle, CountdownItemStyle, StyledRow as Row, Container } from "./styled";
@@ -14,7 +15,7 @@ export default function PlayerOnTurn(props: any) {
     const mapNumber = (number: number, in_min: number, in_max: number, out_min: number, out_max: number) => {
         return ((number - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
     };
-    const ROUND_LENGTH = 3;
+    const ROUND_LENGTH = constants.ROUND_LENGTH;
     const [counter, setCounter] = useState(ROUND_LENGTH);
     const [turnStarted, setTurnStarted] = useState(false);
     const [counterRadius, setCounterRadius] = useState(mapNumber(counter, ROUND_LENGTH, 0, 0, 360));
@@ -66,9 +67,7 @@ export default function PlayerOnTurn(props: any) {
                 <h4>It is your turn!</h4>
                 <Container>{turnStarted ? "" : <Button onClick={startTurn}>Start your turn</Button>}</Container>
             </Row>
-            <Row>
-                {ROUND_LENGTH >= counter && counter > 0 && turnStarted && <GuessWord endRound={endRound} />}
-            </Row>
+            <Row>{ROUND_LENGTH >= counter && counter > 0 && turnStarted && <GuessWord endRound={endRound} />}</Row>
             <Row>
                 {counter && (
                     <CountdownItemStyle>
