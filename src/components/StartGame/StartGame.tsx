@@ -45,7 +45,7 @@ export default function StartGame() {
                 gameId: gameId.toString(),
                 gameMaster: name,
             };
-            dispatch(asyncGameActions.createNewGame(gameDetails));
+            await dispatch(asyncGameActions.createNewGame(gameDetails));
         }
     };
 
@@ -56,14 +56,15 @@ export default function StartGame() {
                 <Form.Group controlId="formGameMasterName">
                     <Form.Label>Your name</Form.Label>
                     <Form.Control
+                        data-testid="start-name-input"
                         onChange={saveName}
                         type="text"
                         placeholder="Your name that will appear during the game"
                         autoComplete="off"
                     />
-                    <Form.Text muted>{helperText}</Form.Text>
+                    <Form.Text muted data-testid="helper-text">{helperText}</Form.Text>
                 </Form.Group>
-                <Button variant="warning" onClick={createNewGame}>
+                <Button variant="warning" onClick={createNewGame} data-testid="submit-button">
                     Start a new game
                 </Button>
             </Form>

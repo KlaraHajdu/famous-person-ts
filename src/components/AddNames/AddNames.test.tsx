@@ -32,11 +32,8 @@ const store = mockStore({
     },
 });
 
-jest.mock("../../constants", () => {
-    return {
-        NUMBER_OF_NAMES_TO_START_GAME: 4,
-    };
-});
+
+jest.mock("../../services/FirebaseRD/fbDatabase.ts");
 
 describe("AddNames component", () => {
     it("renders without crashing", () => {
@@ -46,14 +43,5 @@ describe("AddNames component", () => {
             </Provider>
         );
     });
-    xit("dispatches changeGamePhase actions when required number of names are submitted", async () => {
-        render(
-            <Provider store={store}>
-                <AddNames />
-            </Provider>
-        );
 
-        const actions = store.getActions();
-        expect(actions[0].type).toEqual("gamephase/NEXT_GAMEPHASE_ENTERED");
-    });
 });
