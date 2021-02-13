@@ -19,13 +19,11 @@ function AddNames() {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        console.log(NUMBER_OF_NAMES_TO_START_GAME);
         if (ownName !== gameMaster) {
             return;
         }
 
         const changeGamePhase = async () => {
-            console.log("will dispatch");
             dispatch(asyncGamePhaseActions.changeGamePhase(GamePhase.PLAY_GAME));
         };
 

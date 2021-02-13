@@ -23,7 +23,7 @@ const store = mockStore({
         greenTeam: ["fake_player", "fake_gameMaster"],
         blueTeam: ["fake_player2", "fake_player3"],
         names: {
-            greenTeam: ["name", "name4"],
+            greenTeam: ["name"],
             blueTeam: ["name2", "name3"],
         },
         round1Names: null,
