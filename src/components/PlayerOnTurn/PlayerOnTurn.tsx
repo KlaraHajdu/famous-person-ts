@@ -28,16 +28,18 @@ export default function PlayerOnTurn(props: any) {
         dispatch(asyncGameActions.updateTurnOngoing(true));
     };
 
+    const updateTurnOngoing = () => {
+        dispatch(asyncGameActions.updateTurnOngoing(false));
+    };
+
     const endRound = () => {
         setTurnStarted(false);
-        dispatch(asyncGameActions.updateTurnOngoing(false));
-
+        updateTurnOngoing();
         if (round === 3) {
             dispatch(asyncGamePhaseActions.changeGamePhase(GamePhase.END_GAME));
         } else {
             dispatch(asyncGameActions.updateRound(round));
         }
-
         const nextTeam = teamOnTurn === "greenTeam" ? "blueTeam" : "greenTeam";
         dispatch(asyncGameActions.updateTeamOnTurn(nextTeam));
         dispatch(asyncGameActions.updatePlayerIndex({ team: teamOnTurn, change: 1 }));
@@ -65,7 +67,15 @@ export default function PlayerOnTurn(props: any) {
         <>
             <Row>
                 <h4>It is your turn!</h4>
-                <Container>{turnStarted ? "" : <Button onClick={startTurn}>Start your turn</Button>}</Container>
+                <Container>
+                    {turnStarted ? (
+                        ""
+                    ) : (
+                        <Button onClick={startTurn} data-testid="start-turn-button">
+                            Start your turn
+                        </Button>
+                    )}
+                </Container>
             </Row>
             <Row>{ROUND_LENGTH >= counter && counter > 0 && turnStarted && <GuessWord endRound={endRound} />}</Row>
             <Row>

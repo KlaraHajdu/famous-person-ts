@@ -21,7 +21,7 @@ export default function PlayGameMaster() {
 
     return (
         <div>
-            <Button onClick={pushDeleteButton} variant="outline-secondary">
+            <Button onClick={pushDeleteButton} variant="outline-secondary" data-testid="delete-player-button">
                 Delete a player
             </Button>
         </div>

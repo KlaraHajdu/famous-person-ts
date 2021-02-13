@@ -43,23 +43,17 @@ jest.mock("../../constants", () => ({
 
 jest.mock("../NameInputForm/NameInputForm", () => {
     return function Dummy() {
-        return (
-            <div></div>
-        )
+        return <div></div>;
     };
 });
 jest.mock("../PhaseHeader/PhaseHeader", () => {
     return function Dummy() {
-        return (
-            <div></div>
-        )
+        return <div></div>;
     };
 });
 jest.mock("../TeamContainer/TeamContainer", () => {
     return function Dummy() {
-        return (
-            <div></div>
-        )
+        return <div></div>;
     };
 });
 
@@ -71,5 +65,4 @@ describe("AddNames component", () => {
             </Provider>
         );
     });
-
 });

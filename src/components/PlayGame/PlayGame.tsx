@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -36,7 +36,7 @@ function PlayGame() {
     const [playerOnTurn, setPlayerOnTurn] = useState<string>("");
     const [canDelete, setCanDelete] = useState<boolean>(false);
     const dispatch = useDispatch();
-    const tone = new UIfx(toneAudio);
+    const tone = useMemo(() => new UIfx(toneAudio), []);
 
     const endTurn = async () => {
         dispatch(asyncGameActions.updateTurnOngoing(false));
@@ -100,8 +100,11 @@ function PlayGame() {
                 <MiddleContainerInThreeColumns>
                     <PhaseHeader title="" subtitle={subTitle} />
                     The{" "}
-                    <StyledBadge team={teamOnTurn}>{teamOnTurn === "greenTeam" ? "green" : "blue"} team</StyledBadge> is
-                    guessing. It is <StyledSpan> {playerOnTurn} </StyledSpan>'s turn now.
+                    <StyledBadge team={teamOnTurn} data-testid="team-on-turn">
+                        {teamOnTurn === "greenTeam" ? "green" : "blue"} team
+                    </StyledBadge>{" "}
+                    is guessing. It is <StyledSpan data-testid="player-on-turn"> {playerOnTurn} </StyledSpan>'s turn
+                    now.
                     <StyledDiv>{ownName === playerOnTurn && <PlayerOnTurn endTurn={endTurn} />}</StyledDiv>
                     {canDelete && <PlayGameMaster />}
                 </MiddleContainerInThreeColumns>

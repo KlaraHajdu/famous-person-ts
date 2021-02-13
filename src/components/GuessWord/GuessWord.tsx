@@ -53,8 +53,10 @@ export default function GuessWord(props: any) {
     return (
         <Container>
             <WordContainer>
-                <WordBadge>{word}</WordBadge>
-                <Button onClick={scoreWordGuessed}>Guessed</Button>
+                <WordBadge data-testid="word-element">{word}</WordBadge>
+                <Button onClick={scoreWordGuessed} data-testid="guessed-word-button">
+                    Guessed
+                </Button>
             </WordContainer>
             <DuplicateContainer>
                 {round === 1 && word && <DeleteDuplicateWord word={word} getNewWord={getNewWord} />}

@@ -43,7 +43,7 @@ export default function DeleteDuplicateWord(props: DeleteDuplicateProps) {
 
     return (
         <Container>
-            <Button variant="outline-primary" onClick={() => confirmDeleteWord()}>
+            <Button variant="outline-primary" onClick={() => confirmDeleteWord()} data-testid="delete-duplicate-button">
                 Delete duplicate
             </Button>
             <Dialog
