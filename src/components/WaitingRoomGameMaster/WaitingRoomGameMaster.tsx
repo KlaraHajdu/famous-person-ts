@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Button from "react-bootstrap/Button";
 import { selectPlayers } from "../../store/slices/game/gameSelector";
 import { asyncGameActions } from "../../store/slices/game/slice";
+import { CONSTANTS } from "../../constants";
 
 export default function WaitingRoomGameMasterPart() {
     const players = useSelector(selectPlayers);
@@ -15,9 +16,9 @@ export default function WaitingRoomGameMasterPart() {
     return (
         <React.Fragment>
             <hr />
-            {players && players.length > 1 && (
+            {players && players.length >= CONSTANTS.NUMBER_OF_PLAYERS_TO_START_GAME && (
                 <div>
-                    <Button onClick={formTeams} variant="warning">
+                    <Button onClick={formTeams} variant="warning" data-testid="form-team-button">
                         Form teams
                     </Button>
                 </div>
