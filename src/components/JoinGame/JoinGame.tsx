@@ -45,7 +45,7 @@ function JoinGame() {
         }
 
         const canJoinGame = await verifyGameId(gameId);
-        if (!canJoinGame) {
+        if (!canJoinGame.payload) {
             setGameIdHelperText("Wrong game ID!");
             return;
         }
@@ -70,26 +70,32 @@ function JoinGame() {
                 <Form.Group controlId="formPlayerName">
                     <Form.Label>Your name</Form.Label>
                     <Form.Control
+                        data-testid="name-input"
                         onChange={saveOwnName}
                         type="text"
                         placeholder="Your name that will appear during the game"
                         style={{ width: "100%" }}
                         autoComplete="off"
                     />
-                    <Form.Text muted>{helperText}</Form.Text>
+                    <Form.Text muted data-testid="helper-text-name">
+                        {helperText}
+                    </Form.Text>
                 </Form.Group>
                 <Form.Group controlId="formGameID">
                     <Form.Label>Game ID</Form.Label>
                     <Form.Control
+                        data-testid="gameid-input"
                         onChange={saveGameId}
                         type="text"
                         placeholder="The game ID you received from the game master"
                         style={{ width: "100%" }}
                         autoComplete="off"
                     />
-                    <Form.Text muted>{gameIdHelperText}</Form.Text>
+                    <Form.Text muted data-testid="helper-text-gameid">
+                        {gameIdHelperText}
+                    </Form.Text>
                 </Form.Group>
-                <Button variant="warning" onClick={handleJoinGame}>
+                <Button variant="warning" onClick={handleJoinGame} data-testid="submit-button">
                     Join the game
                 </Button>
             </Form>
