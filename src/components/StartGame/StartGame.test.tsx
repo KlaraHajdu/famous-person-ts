@@ -1,54 +1,32 @@
 import React from "react";
-import { render } from "@testing-library/react";
+import { act, render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import thunk from "redux-thunk";
-import { Provider } from "react-redux";
-import configureMockStore from "redux-mock-store";
 import StartGame from "./StartGame";
 
-const mockStore = configureMockStore([thunk]);
-const store = mockStore({
-    game: {
-        gameId: 1111,
-        ownName: "fake_gameMaster",
-        gameMaster: "fake_gameMaster",
-        ownTeam: "greenTeam",
-        players: ["fake_player", "fake_gameMaster", "fake_player2", "fake_player3"],
-        round: 1,
-        teamOnTurn: "greenTeam",
-        greenPlayerIndex: 0,
-        bluePlayerIndex: 0,
-        turnOngoing: false,
-        blueTeamScore: 0,
-        greenTeamScore: 0,
-        greenTeam: ["fake_player", "fake_gameMaster"],
-        blueTeam: ["fake_player2", "fake_player3"],
-        names: {
-            greenTeam: ["name1", "name3"],
-            blueTeam: ["name2", "name4"],
-        },
-        round1Names: null,
-        round2Names: null,
-        round3Names: null,
-    },
-});
+const mockDispatch = jest.fn();
+const mockSelector = jest.fn();
+jest.mock("react-redux", () => ({
+    useDispatch: () => mockDispatch,
+    useSelector: () => mockSelector,
+}));
 
 jest.mock("../../services/FirebaseRD/fbDatabase.ts");
 
+const mockCheckIfGameExists = jest.fn();
+const mockCreateNewGame = jest.fn();
+jest.mock("../../store/slices/game/slice", () => ({
+    asyncGameActions: {
+        checkIfGameExists: () => mockCheckIfGameExists,
+        createNewGame: () => mockCreateNewGame,
+    },
+}));
+
 describe("StartGame component", () => {
     it("renders without crashing", () => {
-        render(
-            <Provider store={store}>
-                <StartGame />
-            </Provider>
-        );
+        render(<StartGame />);
     });
     it("shows helper text when name is too long", async () => {
-        const { getByTestId } = render(
-            <Provider store={store}>
-                <StartGame />
-            </Provider>
-        );
+        const { getByTestId } = render(<StartGame />);
 
         const nameInput = getByTestId("start-name-input");
         await userEvent.type(nameInput, "Naaaammmeeeeeeeeeeeeeeeeeee");
@@ -57,11 +35,7 @@ describe("StartGame component", () => {
         expect(helperTextField.textContent).toEqual("Name too long!");
     });
     it("shows helper text when name is empty", async () => {
-        const { getByTestId } = render(
-            <Provider store={store}>
-                <StartGame />
-            </Provider>
-        );
+        const { getByTestId } = render(<StartGame />);
 
         const nameInput = getByTestId("start-name-input");
         await userEvent.type(nameInput, "Na");
@@ -71,20 +45,32 @@ describe("StartGame component", () => {
         expect(helperTextField.textContent).toEqual("Name cannot be empty!");
     });
     it("dispatches an action to check gameId when name given", async () => {
-        const { getByTestId } = render(
-            <Provider store={store}>
-                <StartGame />
-            </Provider>
-        );
+        mockDispatch.mockResolvedValueOnce({ payload: "database down" });
+        const { getByTestId } = render(<StartGame />);
 
-        const nameInput = getByTestId("start-name-input");
-        await userEvent.type(nameInput, "master");
-        const startButton = getByTestId("submit-button");
-        await userEvent.click(startButton);
-        let actions: any;
+        await act(async () => {
+            const nameInput = getByTestId("start-name-input");
+            await userEvent.type(nameInput, "master");
+            const startButton = getByTestId("submit-button");
+            await userEvent.click(startButton);
+        });
 
-        actions = store.getActions();
-        expect(actions[0].type).toEqual("game/checkifgameidexists/pending");
+        expect(mockDispatch).toBeCalledTimes(1);
+        expect(mockDispatch).toBeCalledWith(mockCheckIfGameExists);
     });
-   
+    it("dispatches action to create game with a generated gameId", async () => {
+        mockDispatch.mockResolvedValueOnce({ payload: false });
+        mockCheckIfGameExists.mockImplementation((gameId) => gameId);
+        const { getByTestId } = render(<StartGame />);
+
+        await act(async () => {
+            const nameInput = getByTestId("start-name-input");
+            await userEvent.type(nameInput, "master");
+            const startButton = getByTestId("submit-button");
+            await userEvent.click(startButton);
+        });
+        expect(mockDispatch).toBeCalledTimes(2);
+        expect(mockDispatch).toBeCalledWith(mockCheckIfGameExists);
+        expect(mockDispatch).toBeCalledWith(mockCreateNewGame);
+    });
 });

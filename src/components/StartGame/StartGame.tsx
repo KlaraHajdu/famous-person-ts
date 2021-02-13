@@ -45,7 +45,7 @@ export default function StartGame() {
                 gameId: gameId.toString(),
                 gameMaster: name,
             };
-            await dispatch(asyncGameActions.createNewGame(gameDetails));
+            dispatch(asyncGameActions.createNewGame(gameDetails));
         }
     };
 
