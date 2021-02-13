@@ -4,7 +4,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { selectAllNames, selectGameMaster, selectOwnName } from "../../store/slices/game/gameSelector";
 import { asyncGamePhaseActions } from "../../store/slices/gamePhase/slice";
-import constants from "../../constants";
+import { CONSTANTS } from "../../constants";
 import NameInputForm from "../NameInputForm/NameInputForm";
 import PhaseHeader from "../PhaseHeader/PhaseHeader";
 import TeamContainer from "../TeamContainer/TeamContainer";
@@ -12,21 +12,27 @@ import GamePhase from "../../types/GamePhase";
 import { MiddleContainerInThreeColumns } from "./styled";
 
 function AddNames() {
-    const NUMBER_OF_NAMES_TO_START_GAME = constants.NUMBER_OF_NAMES_TO_START_GAME;
+    const NUMBER_OF_NAMES_TO_START_GAME = CONSTANTS.NUMBER_OF_NAMES_TO_START_GAME;
     const namesSubmitted = useSelector(selectAllNames);
-    const ownName = useSelector(selectOwnName)
-    const gameMaster = useSelector(selectGameMaster)
-    const dispatch = useDispatch()
+    const ownName = useSelector(selectOwnName);
+    const gameMaster = useSelector(selectGameMaster);
+    const dispatch = useDispatch();
 
     useEffect(() => {
+        console.log(NUMBER_OF_NAMES_TO_START_GAME);
         if (ownName !== gameMaster) {
-           return
-        }
-        if (namesSubmitted.length === NUMBER_OF_NAMES_TO_START_GAME) {
-            dispatch(asyncGamePhaseActions.changeGamePhase(GamePhase.PLAY_GAME))
+            return;
         }
 
-    }, [dispatch, gameMaster, namesSubmitted, ownName])
+        const changeGamePhase = async () => {
+            console.log("will dispatch");
+            dispatch(asyncGamePhaseActions.changeGamePhase(GamePhase.PLAY_GAME));
+        };
+
+        if (namesSubmitted.length === NUMBER_OF_NAMES_TO_START_GAME) {
+            changeGamePhase();
+        }
+    }, [NUMBER_OF_NAMES_TO_START_GAME, namesSubmitted]);
 
     return (
         <div>

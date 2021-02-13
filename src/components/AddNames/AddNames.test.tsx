@@ -23,8 +23,8 @@ const store = mockStore({
         greenTeam: ["fake_player", "fake_gameMaster"],
         blueTeam: ["fake_player2", "fake_player3"],
         names: {
-            greenTeam: ["name1", "name3"],
-            blueTeam: ["name2", "name4"],
+            greenTeam: ["name", "name4"],
+            blueTeam: ["name2", "name3"],
         },
         round1Names: null,
         round2Names: null,
@@ -32,8 +32,36 @@ const store = mockStore({
     },
 });
 
-
 jest.mock("../../services/FirebaseRD/fbDatabase.ts");
+
+jest.mock("../../constants", () => ({
+    CONSTANTS: {
+        NUMBER_OF_NAMES_TO_START_GAME: 4,
+        ROUND_LENGTH: 3,
+    },
+}));
+
+jest.mock("../NameInputForm/NameInputForm", () => {
+    return function Dummy() {
+        return (
+            <div></div>
+        )
+    };
+});
+jest.mock("../PhaseHeader/PhaseHeader", () => {
+    return function Dummy() {
+        return (
+            <div></div>
+        )
+    };
+});
+jest.mock("../TeamContainer/TeamContainer", () => {
+    return function Dummy() {
+        return (
+            <div></div>
+        )
+    };
+});
 
 describe("AddNames component", () => {
     it("renders without crashing", () => {
