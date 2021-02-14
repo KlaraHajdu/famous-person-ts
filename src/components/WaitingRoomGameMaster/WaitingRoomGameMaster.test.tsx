@@ -25,6 +25,14 @@ const storewithFourPlayers = mockStore({
     },
 });
 
+jest.mock("../../constants", () => ({
+    CONSTANTS: {
+        NUMBER_OF_NAMES_TO_START_GAME: 30,
+        NUMBER_OF_PLAYERS_TO_START_GAME: 4,
+        ROUND_LENGTH: 60,
+    },
+}));
+
 describe("WaitingRoomGameMAster component", () => {
     it("renders without crashing", () => {
         render(
