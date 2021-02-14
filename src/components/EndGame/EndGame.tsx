@@ -38,19 +38,23 @@ export default function EndGame() {
         let balloonTimeout: NodeJS.Timeout;
 
         if (!unmounted) {
-            const balloonsList: [number, React.Dispatch<React.SetStateAction<number>>, number][] = [
-                [balloonTop1, setBalloonTop1, 3.5],
-                [balloonTop2, setBalloonTop2, 5],
-                [balloonTop3, setBalloonTop3, 4],
+            const balloonsList: {
+                balloontop: number;
+                balloonTopSetter: React.Dispatch<React.SetStateAction<number>>;
+                speed: number;
+            }[] = [
+                { balloontop: balloonTop1, balloonTopSetter: setBalloonTop1, speed: 3.5 },
+                { balloontop: balloonTop2, balloonTopSetter: setBalloonTop2, speed: 5 },
+                { balloontop: balloonTop3, balloonTopSetter: setBalloonTop3, speed: 4 },
             ];
             balloonTimeout = setTimeout(() => {
-                balloonsList.forEach((balloonArray) => {
-                    if (balloonArray[0] < -280) {
-                        balloonArray[1](410);
-                    } else if (balloonArray[0] > 405) {
-                        balloonArray[1](balloonArray[0] - 1);
+                balloonsList.forEach((balloon) => {
+                    if (balloon.balloontop < -280) {
+                        balloon.balloonTopSetter(410);
+                    } else if (balloon.balloontop > 405) {
+                        balloon.balloonTopSetter(balloon.balloontop - 1);
                     } else {
-                        balloonArray[1](balloonArray[0] - balloonArray[2]);
+                        balloon.balloonTopSetter(balloon.balloontop - balloon.speed);
                     }
                 });
             }, 10);
