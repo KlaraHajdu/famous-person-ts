@@ -1,3 +1,4 @@
+import { cleanup } from "@testing-library/react";
 import React from "react";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
@@ -13,6 +14,7 @@ export default function EndGame() {
     const blueTeamScore = useSelector(selectBlueTeamScore);
     const greenTeamScore = useSelector(selectGreenTeamScore);
     const ownTeam = useSelector(selectOwnTeam);
+
     useEffect(() => {
         if (blueTeamScore > greenTeamScore) {
             setWinnerTeam("blue team");
@@ -32,46 +34,38 @@ export default function EndGame() {
     }, [ownTeam, winnerTeam]);
 
     useEffect(() => {
-        setTimeout(
-            () =>
-                balloonTop1 >= -280
-                    ? balloonTop1 > 405
-                        ? setBalloonTop1(balloonTop1 - 0.5)
-                        : setBalloonTop1(balloonTop1 - 1.5)
-                    : setBalloonTop1(410),
-            10
-        );
-    }, [balloonTop1]);
+        let unmounted = false;
+        let balloonTimeout: NodeJS.Timeout;
 
-    useEffect(() => {
-        setTimeout(
-            () =>
-                balloonTop2 >= -280
-                    ? balloonTop2 > 405
-                        ? setBalloonTop2(balloonTop2 - 0.5)
-                        : setBalloonTop2(balloonTop2 - 2)
-                    : setBalloonTop2(410),
-            10
-        );
-    }, [balloonTop2]);
-
-    useEffect(() => {
-        setTimeout(
-            () =>
-                balloonTop3 >= -280
-                    ? balloonTop3 > 405
-                        ? setBalloonTop3(balloonTop3 - 0.5)
-                        : setBalloonTop3(balloonTop3 - 1)
-                    : setBalloonTop3(410),
-            10
-        );
-    }, [balloonTop3]);
+        if (!unmounted) {
+            const balloonsList: [number, React.Dispatch<React.SetStateAction<number>>, number][] = [
+                [balloonTop1, setBalloonTop1, 3.5],
+                [balloonTop2, setBalloonTop2, 5],
+                [balloonTop3, setBalloonTop3, 4],
+            ];
+            balloonTimeout = setTimeout(() => {
+                balloonsList.forEach((balloonArray) => {
+                    if (balloonArray[0] < -280) {
+                        balloonArray[1](410);
+                    } else if (balloonArray[0] > 405) {
+                        balloonArray[1](balloonArray[0] - 1);
+                    } else {
+                        balloonArray[1](balloonArray[0] - balloonArray[2]);
+                    }
+                });
+            }, 10);
+        }
+        return () => {
+            clearTimeout(balloonTimeout);
+            unmounted = true;
+        };
+    }, [balloonTop1, balloonTop2, balloonTop3]);
 
     if (blueTeamScore === greenTeamScore) {
         return (
             <MainTile>
                 <TitleContainer>
-                    <h4>It is a draw!</h4>
+                    <h4 data-testid="draw">It is a draw!</h4>
                 </TitleContainer>
             </MainTile>
         );
@@ -85,16 +79,23 @@ export default function EndGame() {
                     won!
                 </TitleContainer>
                 <ResultsContainer>
-                    <Badge variant="primary"> {blueTeamScore} </Badge> :
-                    <Badge variant="success"> {greenTeamScore} </Badge>
+                    <Badge variant="primary" data-testid="blue-score">
+                        {" "}
+                        {blueTeamScore}{" "}
+                    </Badge>{" "}
+                    :
+                    <Badge variant="success" data-testid="green-score">
+                        {" "}
+                        {greenTeamScore}{" "}
+                    </Badge>
                 </ResultsContainer>
-                {iAmWinner && <TitleContainer>Congratulations! </TitleContainer>}
+                {iAmWinner && <TitleContainer data-testid="congratulations">Congratulations! </TitleContainer>}
             </MainTile>
             {iAmWinner && (
                 <>
-                    <Balloon balloonTop={balloonTop1} left="20" />
-                    <Balloon balloonTop={balloonTop2} left="47" />
-                    <Balloon balloonTop={balloonTop3} left="73" />
+                    <Balloon balloontop={balloonTop1} left="20" data-testid="balloon" />
+                    <Balloon balloontop={balloonTop2} left="47" />
+                    <Balloon balloontop={balloonTop3} left="73" />
                 </>
             )}
         </>

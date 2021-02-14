@@ -3,8 +3,8 @@ import { Badge } from "react-bootstrap";
 import { ReactComponent as Balloon } from "../../static/1524086080.svg";
 import { gameTheme } from "../../Theme/theme"
 
-export const StyledBalloon = styled(Balloon) <{ balloonTop: number, left: number }>`
-    top: ${(props: { balloonTop: number; }) => props.balloonTop}px;
+export const StyledBalloon = styled(Balloon) <{ balloontop: number, left: number }>`
+    top: ${(props: { balloontop: number; }) => props.balloontop}px;
     height: 300px;
     position: absolute;
     z-index: 1;
