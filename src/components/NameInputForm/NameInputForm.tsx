@@ -56,8 +56,11 @@ export default function NameInputForm(props: { numberOfNames: number }) {
 
     return (
         <>
-            Your team has added {namesSubmittedByTeam} {namesSubmittedByTeam > 1 ? "names" : "name"} from the{" "}
-            {numberOfNames / 2}.
+            Your team has added{" "}
+            <span data-testid="own-team-names">
+                {namesSubmittedByTeam} {namesSubmittedByTeam > 1 ? "names" : "name"}
+            </span>{" "}
+            from the <span data-testid="all-names"> {numberOfNames / 2}.</span>
             <Form>
                 <Form.Group controlId="formPlayerName">
                     <Form.Control
@@ -66,10 +69,11 @@ export default function NameInputForm(props: { numberOfNames: number }) {
                         type="text"
                         placeholder="Someone to be guessed in the game"
                         autoComplete="off"
+                        data-testid="name-input"
                     />
                 </Form.Group>
-                <Form.Text muted>{helperText}</Form.Text>
-                <Button variant="warning" onClick={submitName}>
+                <Form.Text muted data-testid="helper-text">{helperText}</Form.Text>
+                <Button variant="warning" onClick={submitName} data-testid="submit-name">
                     Submit name
                 </Button>
             </Form>
