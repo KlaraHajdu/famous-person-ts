@@ -17,20 +17,20 @@ export default function PhaseHeader({ title, subtitle }: propsType) {
 
     return (
         <>
-            <h4>Hello {ownName}!</h4>
+            <h4 data-testid="own-name">Hello {ownName}!</h4>
             <Row>
                 <Col>
                     <h6>
-                        Game Id: <Badge variant="secondary">{gameId}</Badge>{" "}
+                        Game Id: <Badge variant="secondary" data-testid="gameId">{gameId}</Badge>{" "}
                     </h6>
                 </Col>
                 <Col>
-                    <h6>Game master: {gameMaster} </h6>
+                    <h6 data-testid="game-master">Game master: {gameMaster} </h6>
                 </Col>
             </Row>
             <hr />
-            <h3>{title}</h3>
-            <h3>{subtitle}</h3>
+            <h3 data-testid="title">{title}</h3>
+            <h3 data-testid="subtitle">{subtitle}</h3>
             <hr />
         </>
     );
