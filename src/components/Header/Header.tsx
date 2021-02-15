@@ -43,15 +43,15 @@ export default function Header() {
                 <Nav>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
-                        <Nav.Link id="nav-link" onClick={clickOpenHowToPlayModal}>
+                        <Nav.Link id="nav-link" onClick={clickOpenHowToPlayModal} data-testid="open-modal">
                             How to play
                         </Nav.Link>
                         <Nav>
-                            <NavDropdown alignRight title="Play" id="collapsible-nav-dropdown">
-                                <NavDropdown.Item onClick={startGameAsMaster}>
+                            <NavDropdown alignRight title="Play" id="collapsible-nav-dropdown" data-testid="show-menu-div">
+                                <NavDropdown.Item onClick={startGameAsMaster} data-testid="start-game">
                                     Start a new game as a game master
                                 </NavDropdown.Item>
-                                <NavDropdown.Item onClick={joinNewGame}>Join a game</NavDropdown.Item>
+                                <NavDropdown.Item onClick={joinNewGame} data-testid="join-game">Join a game</NavDropdown.Item>
                             </NavDropdown>
                         </Nav>
                     </Navbar.Collapse>
