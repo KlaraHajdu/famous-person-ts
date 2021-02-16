@@ -237,7 +237,7 @@ export const createTeams = createAsyncThunk<string, string, { state: RootState }
         const teams = formTeams(players)
         const { greenTeam, blueTeam } = teams
         try {
-            await databaseApi.setTeams(gameId, greenTeam, blueTeam)
+            await databaseApi.setTeams(gameId!, greenTeam, blueTeam)
             thunkApi.dispatch(asyncGamePhaseActions.changeGamePhase(GamePhase.ADD_NAMES))
             return 'teams_updated_in_database'
         }
@@ -253,7 +253,7 @@ export const checkIfNameExists = createAsyncThunk<string, string, { state: RootS
         const { game } = state
         const { gameId } = game 
         try {
-            const nameExists = await databaseApi.checkIfNameExists(gameId, payload)
+            const nameExists = await databaseApi.checkIfNameExists(gameId!, payload)
             if (!nameExists) {
                 thunkApi.dispatch(asyncGameActions.addName(payload))
             }
@@ -271,7 +271,7 @@ export const addName = createAsyncThunk<string, string, { state: RootState }>(
         const { game } = state
         const { gameId, ownTeam } = game 
         try {
-            await databaseApi.addName(gameId, payload, ownTeam!)
+            await databaseApi.addName(gameId!, payload, ownTeam!)
             return 'name_added_in_database'
         }
         catch {
@@ -288,7 +288,7 @@ export const startPlay = createAsyncThunk<string, string, { state: RootState }>(
 
         const date = moment().format("LLLL").toString();
         try {
-            await databaseApi.startPlay(gameId, date)
+            await databaseApi.startPlay(gameId!, date)
             return 'initial_playstate_uploaded_in_database'
         }
         catch {
@@ -303,7 +303,7 @@ export const updateTurnOngoing = createAsyncThunk<string, boolean, { state: Root
         const { game } = state
         const { gameId } = game 
         try {
-            await databaseApi.updateTurnOngoing(gameId, payload)
+            await databaseApi.updateTurnOngoing(gameId!, payload)
             return 'turnOngoing_updated_in_database'
         }
         catch {
@@ -318,7 +318,7 @@ export const updateRound = createAsyncThunk<string, number, { state: RootState }
         const { game } = state
         const { gameId } = game 
         try {
-            await databaseApi.updateRound(gameId, payload)
+            await databaseApi.updateRound(gameId!, payload)
             return 'round_updated_in_database'
         }
         catch {
@@ -334,7 +334,7 @@ export const updateTeamOnTurn = createAsyncThunk<string, string, { state: RootSt
         const { gameId } = game 
         try {
             gameActions.TEAMONTURN_UPDATED(payload)
-            await databaseApi.updateTeamOnTurn(gameId, payload)
+            await databaseApi.updateTeamOnTurn(gameId!, payload)
             return 'teamOnTurn_updated_in_database'
         }
         catch {
@@ -353,32 +353,32 @@ export const updatePlayerIndex = createAsyncThunk<string, {team: string, change:
             if (team === "greenTeam") {
                 if (greenPlayerIndex === greenTeam!.length && change > 0) {
                     gameActions.GREENPLAYERINDEX_UPDATED(0)
-                    await databaseApi.updatePlayerIndex(gameId, "greenPlayerIndex", 0)
+                    await databaseApi.updatePlayerIndex(gameId!, "greenPlayerIndex", 0)
                     return 'playerIndex_updated_in_database_due_to_deleted_player'
                 }
                 else
                     if (greenPlayerIndex === greenTeam!.length - 1 && change > 0) {
                     gameActions.GREENPLAYERINDEX_UPDATED(0)
-                    await databaseApi.updatePlayerIndex(gameId, "greenPlayerIndex", 0)
+                    await databaseApi.updatePlayerIndex(gameId!, "greenPlayerIndex", 0)
                     return 'playerIndex_updated_in_database'
                 } else {
                     gameActions.GREENPLAYERINDEX_UPDATED(greenPlayerIndex + change)
-                    await databaseApi.updatePlayerIndex(gameId, "greenPlayerIndex", greenPlayerIndex + change)
+                    await databaseApi.updatePlayerIndex(gameId!, "greenPlayerIndex", greenPlayerIndex + change)
                     return 'playerIndex_updated_in_database'
                 }
             } else {
                 if (bluePlayerIndex === blueTeam!.length && change > 0) {
                     gameActions.BLUEPLAYERINDEX_UPDATED(0)
-                    await databaseApi.updatePlayerIndex(gameId, "bluePlayerIndex", 0)
+                    await databaseApi.updatePlayerIndex(gameId!, "bluePlayerIndex", 0)
                     return 'playerIndex_updated_in_database_due_to_deleted_player'
                 } else
                     if (bluePlayerIndex === blueTeam!.length - 1 && change > 0) {
                     gameActions.BLUEPLAYERINDEX_UPDATED(0)
-                    await databaseApi.updatePlayerIndex(gameId, "bluePlayerIndex", 0)
+                    await databaseApi.updatePlayerIndex(gameId!, "bluePlayerIndex", 0)
                     return 'playerIndex_updated_in_database'
                 } else {
                     gameActions.BLUEPLAYERINDEX_UPDATED(bluePlayerIndex + change)
-                    await databaseApi.updatePlayerIndex(gameId, "bluePlayerIndex", bluePlayerIndex + change)
+                    await databaseApi.updatePlayerIndex(gameId!, "bluePlayerIndex", bluePlayerIndex + change)
                 }
                 return 'playerIndex_updated_in_database'
             }
@@ -397,7 +397,7 @@ export const deleteWordFromRound = createAsyncThunk<string, string, { state: Roo
         const { gameId, round } = game 
 
         try {
-            await databaseApi.deleteWordFromRound(gameId, round, payload)
+            await databaseApi.deleteWordFromRound(gameId!, round, payload)
             return 'word_deleted_in_database'
         }
         catch {
@@ -413,7 +413,7 @@ export const deleteDuplicateWord = createAsyncThunk<string, string, { state: Roo
         const { gameId } = game 
 
         try {
-            await databaseApi.deleteDuplicateWord(gameId, payload)
+            await databaseApi.deleteDuplicateWord(gameId!, payload)
             return 'duplicate_word_deleted_in_database'
         }
         catch {
@@ -430,7 +430,7 @@ export const deletePlayer = createAsyncThunk<string, {team: string, players: str
         const { team, players } = payload
 
         try {
-            await databaseApi.deletePlayer(gameId, team, players)
+            await databaseApi.deletePlayer(gameId!, team, players)
             return 'player_deleted_in_database'
         }
         catch {
@@ -447,7 +447,7 @@ export const updateScore = createAsyncThunk<string, string, { state: RootState }
         const ownTeam = payload
         const ownScore = ownTeam === "greenTeam"? greenTeamScore : blueTeamScore
         try {
-            await databaseApi.updateScore(gameId, ownTeam, ownScore+1)
+            await databaseApi.updateScore(gameId!, ownTeam, ownScore+1)
             return 'score_updated_in_database'
         }
         catch {
