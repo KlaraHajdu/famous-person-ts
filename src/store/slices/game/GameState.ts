@@ -1,6 +1,6 @@
 type GameState = {
-    gameId: string,
-    ownName: string,
+    gameId: string | null,
+    ownName: string | null,
     gameMaster: string | null,
     ownTeam: string | null,
     players: string[] | null,

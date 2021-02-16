@@ -28,7 +28,7 @@ export const subscribeToGamePhase = createAsyncThunk<string, string, { state: Ro
         try {
             await databaseApi.subscribeToGamePhase(payload,
                 (snapshot) => thunkApi.dispatch(gamePhaseActions.NEXT_GAMEPHASE_ENTERED(snapshot)))
-            return 'gamephase_updated'
+            return 'subscribed_to_gamephase'
         }
         catch {
             return thunkApi.rejectWithValue('database_down')
@@ -41,7 +41,7 @@ export const changeGamePhase = createAsyncThunk<string, GamePhase, { state: Root
         const state = thunkApi.getState()
         const { gameId } = state.game
         try {
-            await databaseApi.changeGamePhase(gameId, payload)
+            await databaseApi.changeGamePhase(gameId!, payload)
             return 'gamephase_updated_in_db'
         }
         catch {
