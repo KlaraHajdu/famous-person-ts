@@ -1,36 +1,12 @@
 import React from "react";
 import { render } from "@testing-library/react";
-import thunk from "redux-thunk";
-import { Provider } from "react-redux";
-import configureMockStore from "redux-mock-store";
+import { useSelector, useDispatch } from "react-redux";
 import AddNames from "./AddNames";
 
-const mockStore = configureMockStore([thunk]);
-const store = mockStore({
-    game: {
-        gameId: 1111,
-        ownName: "fake_gameMaster",
-        gameMaster: "fake_gameMaster",
-        ownTeam: "greenTeam",
-        players: ["fake_player", "fake_gameMaster", "fake_player2", "fake_player3"],
-        round: 1,
-        teamOnTurn: "greenTeam",
-        greenPlayerIndex: 0,
-        bluePlayerIndex: 0,
-        turnOngoing: false,
-        blueTeamScore: 0,
-        greenTeamScore: 0,
-        greenTeam: ["fake_player", "fake_gameMaster"],
-        blueTeam: ["fake_player2", "fake_player3"],
-        names: {
-            greenTeam: ["name"],
-            blueTeam: ["name2", "name3"],
-        },
-        round1Names: null,
-        round2Names: null,
-        round3Names: null,
-    },
-});
+jest.mock("react-redux");
+const mockedUseSelector = useSelector as jest.Mock;
+const mockedDispatch = useDispatch as jest.Mock;
+const fakeDispatch = jest.fn();
 
 jest.mock("../../services/FirebaseRD/fbDatabase.ts");
 
@@ -58,11 +34,31 @@ jest.mock("../TeamContainer/TeamContainer", () => {
 });
 
 describe("AddNames component", () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
     it("renders without crashing", () => {
-        render(
-            <Provider store={store}>
-                <AddNames />
-            </Provider>
-        );
+        mockedUseSelector.mockImplementationOnce(() => ["fake_name", "fake_name2", "fake_name3"]);
+        mockedUseSelector.mockImplementationOnce(() => "fake_GameMaster");
+        mockedUseSelector.mockImplementationOnce(() => "fake_GameMaster");
+        render(<AddNames />);
+    });
+    it("dispatches gamephase change action if user is game master and all names are added", async () => {
+        mockedUseSelector.mockImplementationOnce(() => ["fake_name", "fake_name2", "fake_name3", "fake_name4"]);
+        mockedUseSelector.mockImplementationOnce(() => "fake_GameMaster");
+        mockedUseSelector.mockImplementationOnce(() => "fake_GameMaster");
+        mockedDispatch.mockImplementationOnce(() => fakeDispatch);
+        render(<AddNames />);
+
+        expect(fakeDispatch).toHaveBeenCalled();
+    });
+    it("does not dispatch gamephase change action if user is not game master and all names are added", async () => {
+        mockedUseSelector.mockImplementationOnce(() => ["fake_name", "fake_name2", "fake_name3", "fake_name4"]);
+        mockedUseSelector.mockImplementationOnce(() => "fake_user2");
+        mockedUseSelector.mockImplementationOnce(() => "fake_user");
+        mockedDispatch.mockImplementation(() => fakeDispatch);
+        render(<AddNames />);
+
+        expect(fakeDispatch).not.toHaveBeenCalled();
     });
 });
