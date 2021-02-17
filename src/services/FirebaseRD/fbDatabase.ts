@@ -1,12 +1,13 @@
 import firebase from "firebase/app";
-import 'firebase/database'
+import 'firebase/database';
+import 'firebase/analytics';
 import { firebaseConfig } from "./firebaseConfig";
 import GamePhase from "../../types/GamePhase";
 
 export let appFirebase: any = {}; 
 firebase.initializeApp(firebaseConfig);
 appFirebase = firebase;
-// firebase.analytics(); 
+firebase.analytics(); 
 
 const checkIfGameIdExists = async (gameId: string) => {
      const response = await appFirebase
