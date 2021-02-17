@@ -95,7 +95,7 @@ export default function DeletePlayer(props: any) {
     }, [blueTeam, gameMaster, greenTeam]);
 
     return (
-        <div>
+        <>
             <StyledTable striped bordered size="sm">
                 <tbody>
                     {filteredGreenPlayers &&
@@ -136,6 +136,6 @@ export default function DeletePlayer(props: any) {
                     }
                 }}
             />
-        </div>
+        </>
     );
 }
