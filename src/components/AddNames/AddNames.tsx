@@ -9,7 +9,7 @@ import NameInputForm from "../NameInputForm/NameInputForm";
 import PhaseHeader from "../PhaseHeader/PhaseHeader";
 import TeamContainer from "../TeamContainer/TeamContainer";
 import GamePhase from "../../types/GamePhase";
-import { MiddleContainerInThreeColumns } from "./styled";
+import { MiddleContainerInThreeColumns, StyledRow } from "./styled";
 
 function AddNames() {
     const NUMBER_OF_NAMES_TO_START_GAME = CONSTANTS.NUMBER_OF_NAMES_TO_START_GAME;
@@ -33,8 +33,7 @@ function AddNames() {
     }, [NUMBER_OF_NAMES_TO_START_GAME, namesSubmitted]);
 
     return (
-        <div>
-            <Row>
+            <StyledRow>
                 <Col xs={12} md={3}>
                     <TeamContainer team="blueTeam" />
                 </Col>
@@ -47,8 +46,7 @@ function AddNames() {
                 <Col xs={12} md={3}>
                     <TeamContainer team="greenTeam" />
                 </Col>
-            </Row>
-        </div>
+            </StyledRow>
     );
 }
 
