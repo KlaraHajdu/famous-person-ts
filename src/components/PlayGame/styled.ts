@@ -1,6 +1,7 @@
 import styled from "styled-components"
 import { gameTheme } from "../../Theme/theme"
 import Badge from "react-bootstrap/Badge";
+import Row from "react-bootstrap/Row";
 
 export const MiddleContainerInThreeColumns = styled.div`
     margin: 3em auto;
@@ -12,12 +13,11 @@ export const MiddleContainerInThreeColumns = styled.div`
 
 export const StyledBadge = styled(Badge)<{ team: string }>`
     background-color: ${(prop: { team: string; }) => prop.team === "greenTeam" ? gameTheme.greenBackgroundColor : gameTheme.blueBackgroundColor}
-
-
 `
 export const StyledSpan = styled.span`
     font-weight: bold;
 `
-export const StyledDiv = styled.div`
-    padding-top: 20;
+
+export const StyledRow = styled(Row)`
+    width: 100vw;
 `

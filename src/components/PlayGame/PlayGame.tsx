@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import UIfx from "uifx";
 import {
@@ -20,7 +19,7 @@ import PhaseHeader from "../PhaseHeader/PhaseHeader";
 import TeamContainer from "../TeamContainer/TeamContainer";
 import PlayerOnTurn from "../PlayerOnTurn/PlayerOnTurn";
 import PlayGameMaster from "../PlayGameMaster/PlayGameMaster";
-import { MiddleContainerInThreeColumns, StyledBadge, StyledDiv, StyledSpan } from "./styled";
+import { MiddleContainerInThreeColumns, StyledBadge, StyledSpan, StyledRow as Row } from "./styled";
 
 function PlayGame() {
     const greenTeam = useSelector(selectGreenTeam);
@@ -92,7 +91,7 @@ function PlayGame() {
     }, [teamOnTurn, greenPlayerIndex, bluePlayerIndex, greenTeam, blueTeam, ownName, gameMaster, dispatch]);
 
     return (
-        <Row style={{ width: "100vw" }}>
+        <Row>
             <Col xs={12} md={3}>
                 <TeamContainer team="blueTeam" />
             </Col>
@@ -105,7 +104,7 @@ function PlayGame() {
                     </StyledBadge>{" "}
                     is guessing. It is <StyledSpan data-testid="player-on-turn"> {playerOnTurn} </StyledSpan>'s turn
                     now.
-                    <StyledDiv>{ownName === playerOnTurn && <PlayerOnTurn endTurn={endTurn} />}</StyledDiv>
+                    {ownName === playerOnTurn && <PlayerOnTurn endTurn={endTurn} />}
                     {canDelete && <PlayGameMaster />}
                 </MiddleContainerInThreeColumns>
             </Col>
