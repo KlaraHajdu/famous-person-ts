@@ -27,6 +27,6 @@ online, form random teams and let the game begin! When it is your turn just hit 
 
 ### Installation and Setup Instructions
 
-`yarn start` Runs the app in the development mode. Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+`yarn start` Runs the app in the development mode. Open [http://localhost:3000](http://localhost:3000) to view it in the browser. Firebase related environment variables are needed to run the app locally. 
 
 `yarn test` Launches the test runner in the interactive watch mode.
