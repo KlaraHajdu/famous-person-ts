@@ -225,6 +225,18 @@ export const subscribeToGame = createAsyncThunk<string, string, { state: RootSta
     }
 )
 
+export const unsubscribeFromGame = createAsyncThunk<string, string, { state: RootState }>(
+    'game/unsubscribefromgame', async (payload, thunkApi) => {
+        try {
+            await databaseApi.unsubscribeFromGame(payload)
+            return 'unsubscribed_from_game'
+        }
+        catch {
+            return thunkApi.rejectWithValue('database_down')
+        }
+    }
+)
+
 export const createTeams = createAsyncThunk<string, string, { state: RootState }>(
     'game/createteams', async (payload, thunkApi) => {
         const state = thunkApi.getState()
@@ -459,6 +471,7 @@ export const asyncGameActions = {
     createNewGame,
     joinGame,
     subscribeToGame,
+    unsubscribeFromGame,
     createTeams,
     addName,
     startPlay,

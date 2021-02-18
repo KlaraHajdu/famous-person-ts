@@ -82,11 +82,19 @@ const subscribeToGame = async (gameId: string, callback: (gameMaster:any) => voi
     await appFirebase.database().ref(`games/${gameId}`).on("value", observer)
 }
 
+const unsubscribeFromGame = async (gameId: string) => {
+    await appFirebase.database().ref(`games/${gameId}`).off("value")
+}
+
 const subscribeToGamePhase = async (gameId: string, callback: (gameMaster:any) => void) => {
     const observer = (snapshot: any) => {
         callback(snapshot.val())
     }
     await appFirebase.database().ref(`games/${gameId}/gamePhase`).on("value", observer)
+}
+
+const unsubscribeFromGamePhase = async (gameId: string) => {
+    await appFirebase.database().ref(`games/${gameId}/gamePhase`).off("value")
 }
 
 const changeGamePhase = async (gameId: string, gamePhase: GamePhase) => {
@@ -176,7 +184,9 @@ export const databaseApi = {
     createNewGame,
     joinGame,
     subscribeToGame,
+    unsubscribeFromGame,
     subscribeToGamePhase,
+    unsubscribeFromGamePhase,
     changeGamePhase,
     setTeams,
     addName,

@@ -73,3 +73,24 @@ describe("subscribeToGamePhase async thunk", () => {
         expect(result.payload).toEqual('database_down')
     })  
 })
+
+describe("unsubscribeFromGamePhase async thunk", () => {
+    beforeEach(() => {
+        store.clearActions()
+        jest.clearAllMocks()
+    });
+    it("dispatches action successfully", async () => {
+        mockedDatabaseApi.changeGamePhase.mockReturnValue(new Promise(() => {}))
+        const result = await store.dispatch(asyncGamePhaseActions.unsubscribeFromGamePhase("fakeId"))
+
+        expect(result.type).toEqual("gamephase/unsubscribefromgamephase/fulfilled")
+        expect(result.payload).toEqual('unsubscribed_from_gamephase')
+    }) 
+    it("dispatches error action if database is down", async () => {
+        mockedDatabaseApi.unsubscribeFromGamePhase.mockRejectedValue(new Error("database down"))
+        const result = await store.dispatch(asyncGamePhaseActions.unsubscribeFromGamePhase("fakeId"))
+
+        expect(result.type).toEqual("gamephase/unsubscribefromgamephase/rejected")
+        expect(result.payload).toEqual('database_down')
+    })  
+})

@@ -1,10 +1,9 @@
 import React from "react";
-import { act, render } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import { Provider } from "react-redux";
 import thunk from "redux-thunk";
 import configureMockStore from "redux-mock-store";
 import PlayGame from "./PlayGame";
-import userEvent from "@testing-library/user-event";
 
 const mockStore = configureMockStore([thunk]);
 const store = mockStore({
@@ -19,8 +18,8 @@ const store = mockStore({
         greenPlayerIndex: 0,
         bluePlayerIndex: 0,
         turnOngoing: false,
-        blueTeamScore: 0,
-        greenTeamScore: 0,
+        blueTeamScore: 42,
+        greenTeamScore: 48,
         greenTeam: ["fake_player", "fake_gameMaster", "fake_player5"],
         blueTeam: ["fake_player2", "fake_player3", "fake_player6"],
         names: {
@@ -97,6 +96,9 @@ describe("PlayGame component", () => {
     beforeEach(() => {
         jest.clearAllMocks();
         jest.useFakeTimers();
+        store.clearActions();
+        storeWith4Players.clearActions();
+        storeOfFakePlayer.clearActions();
     });
     afterEach(() => {
         jest.runOnlyPendingTimers();
@@ -205,5 +207,30 @@ describe("PlayGame component", () => {
 
         expect(element).toBeNull();
     });
+    it("dispatches action to unsubscribe from game at unmount", () => {
+        sessionStorage.setItem("blueTeamScore", "23");
+        const { unmount } = render(
+            <Provider store={store}>
+                <PlayGame />
+            </Provider>
+        );
 
+        unmount();
+
+        const actions = store.getActions();
+        expect(actions[0].type).toEqual("game/unsubscribefromgame/pending");
+    });
+    it("dispatches action to unsubscribe from phase at unmount", () => {
+        sessionStorage.setItem("blueTeamScore", "23");
+        const { unmount } = render(
+            <Provider store={store}>
+                <PlayGame />
+            </Provider>
+        );
+
+        unmount();
+
+        const actions = store.getActions();
+        expect(actions[1].type).toEqual("gamephase/unsubscribefromgamephase/pending");
+    });
 });

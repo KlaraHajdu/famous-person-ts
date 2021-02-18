@@ -36,6 +36,18 @@ export const subscribeToGamePhase = createAsyncThunk<string, string, { state: Ro
     }
 )
 
+export const unsubscribeFromGamePhase = createAsyncThunk<string, string, { state: RootState }>(
+    'gamephase/unsubscribefromgamephase', async (payload, thunkApi) => {
+        try {
+            await databaseApi.unsubscribeFromGamePhase(payload)
+            return 'unsubscribed_from_gamephase'
+        }
+        catch {
+            return thunkApi.rejectWithValue('database_down')
+        }
+    }
+)
+
 export const changeGamePhase = createAsyncThunk<string, GamePhase, { state: RootState }>(
     'gamephase/changegamephase', async (payload, thunkApi) => {
         const state = thunkApi.getState()
@@ -56,5 +68,6 @@ export const gamePhaseActions = gamePhaseSlice.actions
 
 export const asyncGamePhaseActions = {
     subscribeToGamePhase,
+    unsubscribeFromGamePhase,
     changeGamePhase
 }

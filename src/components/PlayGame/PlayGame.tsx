@@ -5,6 +5,7 @@ import UIfx from "uifx";
 import {
     selectBluePlayerIndex,
     selectBlueTeam,
+    selectGameId,
     selectGameMaster,
     selectGreenPlayerIndex,
     selectGreenTeam,
@@ -20,8 +21,10 @@ import TeamContainer from "../TeamContainer/TeamContainer";
 import PlayerOnTurn from "../PlayerOnTurn/PlayerOnTurn";
 import PlayGameMaster from "../PlayGameMaster/PlayGameMaster";
 import { MiddleContainerInThreeColumns, StyledBadge, StyledSpan, StyledRow as Row } from "./styled";
+import { asyncGamePhaseActions } from "../../store/slices/gamePhase/slice";
 
 function PlayGame() {
+    const gameId = useSelector(selectGameId);
     const greenTeam = useSelector(selectGreenTeam);
     const blueTeam = useSelector(selectBlueTeam);
     const ownName = useSelector(selectOwnName);
@@ -89,6 +92,13 @@ function PlayGame() {
             setPlayerOnTurn(blueTeam[bluePlayerIndex]);
         }
     }, [teamOnTurn, greenPlayerIndex, bluePlayerIndex, greenTeam, blueTeam, ownName, gameMaster, dispatch]);
+
+    useEffect(() => {
+        return () => {
+            dispatch(asyncGameActions.unsubscribeFromGame(gameId));
+            dispatch(asyncGamePhaseActions.unsubscribeFromGamePhase(gameId));
+        };
+    }, [dispatch, gameId]);
 
     return (
         <Row>

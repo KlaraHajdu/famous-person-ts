@@ -405,6 +405,33 @@ describe("subscribeToGame async action", () => {
     })
 })
 
+describe("unsubscribeFromGame async action", () => {
+    beforeEach(() => {
+        Object.values(mockedDatabaseApi).forEach((fn) => {
+            fn.mockReset()
+        })
+        store.clearActions()
+    })
+    it("returns the right action if unsubscribed from game", async () => {
+        mockedDatabaseApi.unsubscribeFromGame.mockResolvedValueOnce()
+
+        await store.dispatch(asyncGameActions.unsubscribeFromGame("1234"))
+
+        const actions = store.getActions()
+        expect(actions[1].type).toEqual('game/unsubscribefromgame/fulfilled')
+        expect(actions[1].payload).toEqual('unsubscribed_from_game')
+    })
+    it("returns the right action if database is down", async () => {
+        mockedDatabaseApi.unsubscribeFromGame.mockRejectedValueOnce("database down")
+
+        await store.dispatch(asyncGameActions.unsubscribeFromGame("1234"))
+
+        const actions = store.getActions()
+        expect(actions[1].type).toEqual('game/unsubscribefromgame/rejected')
+        expect(actions[1].payload).toEqual("database_down")
+    })
+})
+
 describe("createTeams async action", () => {
     beforeEach(() => {
         Object.values(mockedDatabaseApi).forEach((fn) => {
