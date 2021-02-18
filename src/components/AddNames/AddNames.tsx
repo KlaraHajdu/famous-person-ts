@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { selectAllNames, selectGameMaster, selectOwnName } from "../../store/slices/game/gameSelector";
 import { asyncGamePhaseActions } from "../../store/slices/gamePhase/slice";
@@ -30,7 +29,7 @@ function AddNames() {
         if (namesSubmitted.length === NUMBER_OF_NAMES_TO_START_GAME) {
             changeGamePhase();
         }
-    }, [NUMBER_OF_NAMES_TO_START_GAME, namesSubmitted]);
+    }, [NUMBER_OF_NAMES_TO_START_GAME, dispatch, gameMaster, namesSubmitted, ownName]);
 
     return (
             <StyledRow>

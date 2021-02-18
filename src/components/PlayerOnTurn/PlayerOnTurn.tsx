@@ -61,7 +61,7 @@ export default function PlayerOnTurn(props: any) {
         return () => {
             clearTimeout(counterTimeout);
         };
-    }, [turnStarted, counter, props]);
+    }, [turnStarted, counter, props, ROUND_LENGTH]);
 
     return (
         <>

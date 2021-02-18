@@ -23,10 +23,6 @@ export default function GuessWord(props: any) {
         }
     };
 
-    const endRound = () => {
-        props.endRound();
-    };
-
     const getNewWord = () => {
         setWordDeleted(wordDeleted + 1);
     };
@@ -44,11 +40,11 @@ export default function GuessWord(props: any) {
 
     useEffect(() => {
         if (allWordsInRound.length === 0) {
-            endRound();
+            props.endRound();
         }
         const randomId = Math.floor(Math.random() * allWordsInRound.length);
         setWord(allWordsInRound[randomId]);
-    }, [allWordsInRound, wordDeleted]);
+    }, [allWordsInRound, props, wordDeleted]);
 
     return (
         <Container>

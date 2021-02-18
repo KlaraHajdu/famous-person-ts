@@ -27,7 +27,7 @@ export default function TeamContainer(props: TeamType) {
             membersListText = blueTeam && blueTeam.join(", ");
         }
         setMembers(membersListText);
-    }, [greenTeam, blueTeam]);
+    }, [greenTeam, blueTeam, props.team]);
 
     return (
         <TeamContainerInThreeColumns team={props.team}>

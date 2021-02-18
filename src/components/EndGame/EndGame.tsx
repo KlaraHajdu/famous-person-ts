@@ -1,4 +1,3 @@
-import { cleanup } from "@testing-library/react";
 import React from "react";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
