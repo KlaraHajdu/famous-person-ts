@@ -52,6 +52,27 @@ describe("changeGamePhase async thunk", () => {
     })  
 })
 
+describe("verifyGamePhase async thunk", () => {
+    beforeEach(() => {
+        store.clearActions()
+        jest.clearAllMocks()
+    });
+    it("dispatches action successfully", async () => {
+        mockedDatabaseApi.verifyGamePhase.mockResolvedValue(true)
+        const result = await store.dispatch(asyncGamePhaseActions.verifyGamePhase(GamePhase.START_GAME))
+
+        expect(result.type).toEqual("gamephase/verifygamephase/fulfilled")
+        expect(result.payload).toEqual(true)
+    }) 
+    it("dispatches error action if database is down", async () => {
+        mockedDatabaseApi.verifyGamePhase.mockRejectedValue(new Error("database down"))
+        await store.dispatch(asyncGamePhaseActions.verifyGamePhase(GamePhase.START_GAME))
+
+        const actions = store.getActions()
+        expect(actions[1].type).toEqual("gamephase/verifygamephase/rejected")
+        expect(actions[1].payload).toEqual('database_down')
+    })  
+})
 
 describe("subscribeToGamePhase async thunk", () => {
     beforeEach(() => {

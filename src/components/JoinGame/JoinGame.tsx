@@ -4,6 +4,7 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { asyncGameActions } from "../../store/slices/game/slice";
 import { MainTile } from "../../Theme/theme";
+import { asyncGamePhaseActions } from "../../store/slices/gamePhase/slice";
 
 function JoinGame() {
     const dispatch = useDispatch();
@@ -39,28 +40,47 @@ function JoinGame() {
         return gameExists;
     };
 
-    const handleJoinGame = async () => {
-        if (helperText !== null || gameIdHelperText !== null || !gameId) {
-            return;
-        }
+    const verifyRightGamePhase = async (gameId: string) => {
+        const isWaitingRoom = await dispatch(asyncGamePhaseActions.verifyGamePhase(gameId));
+        return isWaitingRoom.payload;
+    };
 
-        const canJoinGame = await verifyGameId(gameId);
-        if (!canJoinGame.payload) {
-            setGameIdHelperText("Wrong game ID!");
-            return;
-        }
-
+    const checkIfNameExists = async (gameId: string) => {
         if (!ownName) {
             return;
         }
         const playerNameExists = await dispatch(asyncGameActions.checkIfPlayerNameExists({ gameId, ownName }));
+        return playerNameExists.payload;
+    };
 
-        if (playerNameExists.payload) {
+    const handleJoinGame = async () => {
+        if (!ownName) {
+            return;
+        }
+
+        if (helperText !== null || gameIdHelperText !== null || !gameId) {
+            return;
+        }
+
+        const gameIdVerified = await verifyGameId(gameId);
+        if (!gameIdVerified.payload) {
+            setGameIdHelperText("Wrong game ID!");
+            return;
+        }
+
+        const isWaitingRoom = await verifyRightGamePhase(gameId);
+        if (!isWaitingRoom) {
+            setGameIdHelperText("You cannot join a game, which has already started!");
+            return;
+        }
+
+        const playerNameExists = await checkIfNameExists(gameId);
+
+        if (playerNameExists) {
             setHelperText("This name is already taken, please choose another!");
             return;
-        } else {
-            dispatch(asyncGameActions.joinGame({ gameId, ownName }));
         }
+        dispatch(asyncGameActions.joinGame({ gameId, ownName }));
     };
 
     return (

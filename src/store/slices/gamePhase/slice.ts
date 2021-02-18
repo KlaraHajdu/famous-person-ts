@@ -23,6 +23,18 @@ const gamePhaseSlice = createSlice({
     }
 })
 
+export const verifyGamePhase = createAsyncThunk<boolean | string, string, { state: RootState }>(
+    'gamephase/verifygamephase', async (payload, thunkApi) => {
+        try {
+            const response = await databaseApi.verifyGamePhase(payload)
+            return response
+        }
+        catch {
+            return thunkApi.rejectWithValue('database_down')
+        }
+    }
+)
+
 export const subscribeToGamePhase = createAsyncThunk<string, string, { state: RootState }>(
     'gamephase/subscribetogamephase', async (payload, thunkApi) => {
         try {
@@ -67,6 +79,7 @@ export default gamePhaseSlice.reducer
 export const gamePhaseActions = gamePhaseSlice.actions
 
 export const asyncGamePhaseActions = {
+    verifyGamePhase,
     subscribeToGamePhase,
     unsubscribeFromGamePhase,
     changeGamePhase

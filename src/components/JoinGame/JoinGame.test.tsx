@@ -77,7 +77,23 @@ describe("JoinGame component", () => {
         const helperTextField = getByTestId("helper-text-gameid");
         expect(helperTextField.textContent).toEqual("Wrong game ID!");
     });
-    it("dispatches action to check if player name is taken if game ID is correct", async () => {
+    it("dispatches an action to verify game phase when name and gameId given", async () => {
+        mockDispatch.mockResolvedValueOnce({ payload: true });
+        mockDispatch.mockResolvedValueOnce({ payload: false });
+        const { getByTestId } = render(<JoinGame />);
+        await act(async () => {
+            const nameInput = getByTestId("name-input");
+            await userEvent.type(nameInput, "User");
+            const gameIdInput = getByTestId("gameid-input");
+            await userEvent.type(gameIdInput, "5453");
+            const startButton = getByTestId("submit-button");
+            await userEvent.click(startButton);
+        });
+
+        expect(mockDispatch).toBeCalledTimes(2);
+    });
+    it("dispatches action to check if player name is taken if game ID and gamePhase are correct", async () => {
+        mockDispatch.mockResolvedValueOnce({ payload: true });
         mockDispatch.mockResolvedValueOnce({ payload: true });
         mockDispatch.mockResolvedValueOnce({ payload: true });
         const { getByTestId } = render(<JoinGame />);
@@ -91,9 +107,10 @@ describe("JoinGame component", () => {
             await userEvent.click(startButton);
         });
 
-        expect(mockDispatch).toBeCalledTimes(2);
+        expect(mockDispatch).toBeCalledTimes(3);
     });
     it("shows helper text when player name is already taken", async () => {
+        mockDispatch.mockResolvedValueOnce({ payload: true });
         mockDispatch.mockResolvedValueOnce({ payload: true });
         mockDispatch.mockResolvedValueOnce({ payload: true });
         const { getByTestId } = render(<JoinGame />);
@@ -110,7 +127,8 @@ describe("JoinGame component", () => {
         const helperTextField = getByTestId("helper-text-name");
         expect(helperTextField.textContent).toEqual("This name is already taken, please choose another!");
     });
-    it("dispatches action to join game when name and game ID are correct", async () => {
+    it("dispatches action to join game when name, game ID and gamePhase are correct", async () => {
+        mockDispatch.mockResolvedValueOnce({ payload: true });
         mockDispatch.mockResolvedValueOnce({ payload: true });
         mockDispatch.mockResolvedValueOnce({ payload: false });
         const { getByTestId } = render(<JoinGame />);
@@ -124,6 +142,6 @@ describe("JoinGame component", () => {
             await userEvent.click(startButton);
         });
 
-        expect(mockDispatch).toBeCalledTimes(3);
+        expect(mockDispatch).toBeCalledTimes(4);
     });
 });

@@ -7,7 +7,16 @@ import GamePhase from "../../types/GamePhase";
 export let appFirebase: any = {}; 
 firebase.initializeApp(firebaseConfig);
 appFirebase = firebase;
-firebase.analytics(); 
+
+
+const checkIfAnalyticsIsSupported = async () => {
+    const isSupported = await firebase.analytics.isSupported()
+    if (isSupported) {
+        firebase.analytics();
+    }
+}
+
+checkIfAnalyticsIsSupported()
 
 const checkIfGameIdExists = async (gameId: string) => {
      const response = await appFirebase
@@ -15,6 +24,14 @@ const checkIfGameIdExists = async (gameId: string) => {
       .ref(`games/${gameId}`)
       .once("value");
     return response.val()
+};
+
+const verifyGamePhase = async (gameId: string) => {
+    const response = await appFirebase
+     .database()
+     .ref(`games/${gameId}/gamePhase`)
+        .once("value");
+   return response.val() === "waitingRoom"
 };
 
 const checkIfPlayerNameExists = async (gameId: string, name: string) => {
@@ -139,7 +156,6 @@ const startPlay = async (gameId: string, date: string) => {
     await appFirebase.database().ref(`games/${gameId}/greenTeamScore`).set(0)
 }
 
-
 const updateTurnOngoing = async (gameId: string, turnOngoing: boolean) => {
     await appFirebase.database().ref(`games/${gameId}/turnOngoing`).set(`${ turnOngoing}`)
 }
@@ -179,6 +195,7 @@ const updateScore = async (gameId: string, team: string, updatedScore: number) =
 
 export const databaseApi = {
     checkIfGameIdExists,
+    verifyGamePhase,
     checkIfPlayerNameExists,
     checkIfNameExists,
     createNewGame,
