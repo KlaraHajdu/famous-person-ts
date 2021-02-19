@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Button from "react-bootstrap/Button";
 import { selectAllWordsInRound, selectOwnTeam, selectRound } from "../../store/slices/game/gameSelector";
@@ -14,6 +14,7 @@ export default function GuessWord(props: any) {
     const [wordDeleted, setWordDeleted] = useState(0);
     const allWordsInRound = useSelector(selectAllWordsInRound);
     const dispatch = useDispatch();
+    const endRoundProps = props.endRound;
 
     const scoreWordGuessed = () => {
         if (buttonActive && word) {
@@ -40,11 +41,11 @@ export default function GuessWord(props: any) {
 
     useEffect(() => {
         if (allWordsInRound.length === 0) {
-            props.endRound();
+            endRoundProps();
         }
         const randomId = Math.floor(Math.random() * allWordsInRound.length);
         setWord(allWordsInRound[randomId]);
-    }, [allWordsInRound, props, wordDeleted]);
+    }, [allWordsInRound, wordDeleted]);
 
     return (
         <Container>
