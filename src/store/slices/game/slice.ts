@@ -354,41 +354,17 @@ export const updateTeamOnTurn = createAsyncThunk<string, string, { state: RootSt
     }
 )
 
-export const updatePlayerIndex = createAsyncThunk<string, {team: string, change: number}, { state: RootState }>(
+export const updatePlayerIndex = createAsyncThunk<string, {teamIndex: string, nextIndex: number}, { state: RootState }>(
     'game/updateplayerindex', async (payload, thunkApi) => {
         const state = thunkApi.getState()
         const { game } = state
-        const { gameId, greenPlayerIndex, bluePlayerIndex, greenTeam, blueTeam } = game 
-        const { team, change } = payload
+        const { gameId } = game 
+        const { teamIndex, nextIndex } = payload
         try {
-            if (team === "greenTeam") {
-                if (greenPlayerIndex === greenTeam!.length && change > 0) {
-                    await databaseApi.updatePlayerIndex(gameId!, "greenPlayerIndex", 0)
-                    return 'green_playerIndex_updated_in_database_due_to_deleted_player_on_turn'
-                }
-                else
-                    if (greenPlayerIndex === greenTeam!.length - 1 && change > 0) {
-                    await databaseApi.updatePlayerIndex(gameId!, "greenPlayerIndex", 0)
-                    return 'green_playerIndex_updated_in_database'
-                } else {
-                    await databaseApi.updatePlayerIndex(gameId!, "greenPlayerIndex", greenPlayerIndex + change)
-                    return 'green_playerIndex_updated_in_database'
-                }
-            } else {
-                if (bluePlayerIndex === blueTeam!.length && change > 0) {
-                    await databaseApi.updatePlayerIndex(gameId!, "bluePlayerIndex", 0)
-                    return 'blue_playerIndex_updated_in_database_due_to_deleted_player_on_turn'
-                } else
-                    if (bluePlayerIndex === blueTeam!.length - 1 && change > 0) {
-                    await databaseApi.updatePlayerIndex(gameId!, "bluePlayerIndex", 0)
-                    return 'blue_playerIndex_updated_in_database'
-                } else {
-                    await databaseApi.updatePlayerIndex(gameId!, "bluePlayerIndex", bluePlayerIndex + change)
-                    return 'blue_playerIndex_updated_in_database'
-                }
-            }
-        }
-        catch {
+            await databaseApi.updatePlayerIndex(gameId!, teamIndex, nextIndex)
+            return 'playerIndex_updated_in_database'
+
+        } catch {
             return thunkApi.rejectWithValue('database_down')
         }
     }

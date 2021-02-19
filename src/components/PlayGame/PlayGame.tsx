@@ -44,7 +44,26 @@ function PlayGame() {
         dispatch(asyncGameActions.updateTurnOngoing(false));
         const nextTeam = teamOnTurn === "greenTeam" ? "blueTeam" : "greenTeam";
         dispatch(asyncGameActions.updateTeamOnTurn(nextTeam));
-        dispatch(asyncGameActions.updatePlayerIndex({ team: teamOnTurn, change: 1 }));
+        if (teamOnTurn === "greenTeam") {
+            if (greenPlayerIndex === greenTeam.length - 1) {
+                dispatch(asyncGameActions.updatePlayerIndex({ teamIndex: "greenPlayerIndex", nextIndex: 0 }));
+            } else {
+                dispatch(
+                    asyncGameActions.updatePlayerIndex({
+                        teamIndex: "greenPlayerIndex",
+                        nextIndex: greenPlayerIndex + 1,
+                    })
+                );
+            }
+        } else {
+            if (bluePlayerIndex === blueTeam.length - 1) {
+                dispatch(asyncGameActions.updatePlayerIndex({ teamIndex: "bluePlayerIndex", nextIndex: 0 }));
+            } else {
+                dispatch(
+                    asyncGameActions.updatePlayerIndex({ teamIndex: "bluePlayerIndex", nextIndex: bluePlayerIndex + 1 })
+                );
+            }
+        }
     };
 
     useEffect(() => {
@@ -80,10 +99,14 @@ function PlayGame() {
     }, [round]);
 
     useEffect(() => {
-        if (ownName === gameMaster && greenTeam.length + blueTeam.length > 4) {
+        if (ownName === gameMaster && teamOnTurn === "greenTeam" && greenTeam.length > 2) {
             setCanDelete(true);
+        } else if (ownName === gameMaster && teamOnTurn === "blueTeam" && blueTeam.length > 2) {
+            setCanDelete(true);
+        } else {
+            setCanDelete(false);
         }
-    }, [blueTeam.length, gameMaster, greenTeam.length, ownName]);
+    }, [blueTeam.length, gameMaster, greenTeam.length, ownName, teamOnTurn]);
 
     useEffect(() => {
         if (teamOnTurn === "greenTeam") {
@@ -115,7 +138,7 @@ function PlayGame() {
                     is guessing. It is <StyledSpan data-testid="player-on-turn"> {playerOnTurn} </StyledSpan>'s turn
                     now.
                     {ownName === playerOnTurn && <PlayerOnTurn endTurn={endTurn} />}
-                    {canDelete && <PlayGameMaster />}
+                    {canDelete && playerOnTurn !== gameMaster && <PlayGameMaster playerOnTurn={playerOnTurn} />}
                 </MiddleContainerInThreeColumns>
             </Col>
             <Col xs={12} md={3}>

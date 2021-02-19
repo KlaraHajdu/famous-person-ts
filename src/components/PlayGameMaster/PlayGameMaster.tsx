@@ -3,10 +3,14 @@ import { Button } from "react-bootstrap";
 import DeletePlayer from "../DeletePlayer/DeletePlayer";
 import { Container } from "./styled";
 
-export default function PlayGameMaster() {
+type PlayGameMasterProps = {
+    playerOnTurn: string;
+};
+
+export default function PlayGameMaster(props: PlayGameMasterProps) {
     const [wantToDelete, setWantToDelete] = useState(false);
 
-    const pushDeleteButton = () => {
+    const clickDeleteButton = () => {
         setWantToDelete(true);
     };
 
@@ -14,16 +18,19 @@ export default function PlayGameMaster() {
         setWantToDelete(false);
     };
 
-
     if (wantToDelete) {
-        
-        return (<div> <DeletePlayer handleClosing={handleClosing}/></div>)
+        return (
+            <div>
+                {" "}
+                <DeletePlayer handleClosing={handleClosing} playerOnTurn={props.playerOnTurn} />
+            </div>
+        );
     }
 
     return (
         <Container>
-            <Button onClick={pushDeleteButton} variant="outline-secondary" data-testid="delete-player-button">
-                Delete a player
+            <Button onClick={clickDeleteButton} variant="outline-secondary" data-testid="delete-player-button">
+                Delete the player on turn
             </Button>
         </Container>
     );

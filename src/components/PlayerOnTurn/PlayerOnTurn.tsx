@@ -2,7 +2,14 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Button from "react-bootstrap/Button";
-import { selectRound, selectTeamOnTurn } from "../../store/slices/game/gameSelector";
+import {
+    selectBluePlayerIndex,
+    selectBlueTeam,
+    selectGreenPlayerIndex,
+    selectGreenTeam,
+    selectRound,
+    selectTeamOnTurn,
+} from "../../store/slices/game/gameSelector";
 import { asyncGameActions } from "../../store/slices/game/slice";
 import { asyncGamePhaseActions } from "../../store/slices/gamePhase/slice";
 import { CONSTANTS } from "../../constants";
@@ -21,6 +28,10 @@ export default function PlayerOnTurn(props: any) {
     const [counterRadius, setCounterRadius] = useState(mapNumber(counter, ROUND_LENGTH, 0, 0, 360));
     const round: number = useSelector(selectRound);
     const teamOnTurn = useSelector(selectTeamOnTurn);
+    const greenPlayerIndex = useSelector(selectGreenPlayerIndex);
+    const bluePlayerIndex = useSelector(selectBluePlayerIndex);
+    const greenTeam = useSelector(selectGreenTeam);
+    const blueTeam = useSelector(selectBlueTeam);
     const dispatch = useDispatch();
 
     const startTurn = () => {
@@ -42,7 +53,26 @@ export default function PlayerOnTurn(props: any) {
         }
         const nextTeam = teamOnTurn === "greenTeam" ? "blueTeam" : "greenTeam";
         dispatch(asyncGameActions.updateTeamOnTurn(nextTeam));
-        dispatch(asyncGameActions.updatePlayerIndex({ team: teamOnTurn, change: 1 }));
+        if (teamOnTurn === "greenTeam") {
+            if (greenPlayerIndex === greenTeam.length - 1) {
+                dispatch(asyncGameActions.updatePlayerIndex({ teamIndex: "greenPlayerIndex", nextIndex: 0 }));
+            } else {
+                dispatch(
+                    asyncGameActions.updatePlayerIndex({
+                        teamIndex: "greenPlayerIndex",
+                        nextIndex: greenPlayerIndex + 1,
+                    })
+                );
+            }
+        } else {
+            if (bluePlayerIndex === blueTeam.length - 1) {
+                dispatch(asyncGameActions.updatePlayerIndex({ teamIndex: "bluePlayerIndex", nextIndex: 0 }));
+            } else {
+                dispatch(
+                    asyncGameActions.updatePlayerIndex({ teamIndex: "bluePlayerIndex", nextIndex: bluePlayerIndex + 1 })
+                );
+            }
+        }
     };
 
     useEffect(() => {

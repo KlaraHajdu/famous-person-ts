@@ -40,6 +40,12 @@ jest.mock("../../constants", () => ({
     },
 }));
 
+jest.mock("../GuessWord/GuessWord", () => {
+    return function Dummy(props: any) {
+        return <div data-testid="guessed-word-button"></div>;
+    };
+});
+
 describe("PlayerOnTurn component", () => {
     beforeEach(() => {
         jest.clearAllMocks();
@@ -88,21 +94,5 @@ describe("PlayerOnTurn component", () => {
 
         const actions = store.getActions();
         expect(actions[0].type).toEqual("game/updateturnongoing/pending");
-    });
-    it("shows the guessed word button if the player starts the turn and hides when ends", async () => {
-        const { getByTestId, queryByTestId } = render(
-            <Provider store={store}>
-                <PlayerOnTurn />
-            </Provider>
-        );
-
-        const button = getByTestId("start-turn-button");
-        await userEvent.click(button);
-
-        const guessedButton = getByTestId("guessed-word-button");
-        expect(guessedButton).not.toBeNull();
-
-        const guessedButtonLater = queryByTestId("guessed-word-button");
-        expect(guessedButtonLater).not.toBeNull();
     });
 });

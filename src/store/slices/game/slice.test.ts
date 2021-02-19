@@ -644,43 +644,25 @@ describe("updatePlayerIndex async action", () => {
     it("returns the right action if green playerIndex is updated", async () => {
         mockedDatabaseApi.updatePlayerIndex.mockResolvedValueOnce()
 
-        await store.dispatch(asyncGameActions.updatePlayerIndex({ team: "greenTeam", change: 1}))
+        await store.dispatch(asyncGameActions.updatePlayerIndex({ teamIndex: "greenPlayerIndex", nextIndex: 1}))
 
         const actions = store.getActions()
         expect(actions[1].type).toEqual('game/updateplayerindex/fulfilled')
-        expect(actions[1].payload).toEqual('green_playerIndex_updated_in_database')
-    })
-    it("returns the right action if green playerIndex is updated because the player on turn is deleted", async () => {
-        mockedDatabaseApi.updatePlayerIndex.mockResolvedValueOnce()
-
-        await storeAfterPlayerOnTurnDeleted.dispatch(asyncGameActions.updatePlayerIndex({ team: "greenTeam", change: 1}))
-
-        const actions = storeAfterPlayerOnTurnDeleted.getActions()
-        expect(actions[1].type).toEqual('game/updateplayerindex/fulfilled')
-        expect(actions[1].payload).toEqual('green_playerIndex_updated_in_database_due_to_deleted_player_on_turn')
+        expect(actions[1].payload).toEqual('playerIndex_updated_in_database')
     })
     it("returns the right action if blue playerIndex is updated", async () => {
         mockedDatabaseApi.updatePlayerIndex.mockResolvedValueOnce()
 
-        await store.dispatch(asyncGameActions.updatePlayerIndex({ team: "blueTeam", change: 1}))
+        await store.dispatch(asyncGameActions.updatePlayerIndex({ teamIndex: "bluePlayerIndex", nextIndex: 1}))
 
         const actions = store.getActions()
         expect(actions[1].type).toEqual('game/updateplayerindex/fulfilled')
-        expect(actions[1].payload).toEqual('blue_playerIndex_updated_in_database')
-    })
-    it("returns the right action if blue playerIndex is updated because the player on turn is deleted", async () => {
-        mockedDatabaseApi.updatePlayerIndex.mockResolvedValueOnce()
-
-        await storeAfterPlayerOnTurnDeleted.dispatch(asyncGameActions.updatePlayerIndex({ team: "blueTeam", change: 1}))
-
-        const actions = storeAfterPlayerOnTurnDeleted.getActions()
-        expect(actions[1].type).toEqual('game/updateplayerindex/fulfilled')
-        expect(actions[1].payload).toEqual('blue_playerIndex_updated_in_database_due_to_deleted_player_on_turn')
+        expect(actions[1].payload).toEqual('playerIndex_updated_in_database')
     })
     it("returns the right error action if database is down", async () => {
         mockedDatabaseApi.updatePlayerIndex.mockRejectedValueOnce("database down")
 
-        await store.dispatch(asyncGameActions.updatePlayerIndex({ team: "greenTeam", change: 2}))
+        await store.dispatch(asyncGameActions.updatePlayerIndex({ teamIndex: "greenPlayerIndex", nextIndex: 2}))
 
         const actions = store.getActions()
         expect(actions[1].type).toEqual('game/updateplayerindex/rejected')
