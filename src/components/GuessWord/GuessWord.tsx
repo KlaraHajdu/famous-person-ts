@@ -40,12 +40,16 @@ export default function GuessWord(props: any) {
     }, [buttonActive]);
 
     useEffect(() => {
-        if (allWordsInRound.length === 0) {
-            endRoundProps();
-        }
         const randomId = Math.floor(Math.random() * allWordsInRound.length);
         setWord(allWordsInRound[randomId]);
     }, [allWordsInRound, wordDeleted]);
+
+    useEffect(() => {
+        if (allWordsInRound.length === 0) {
+            endRoundProps();
+        }
+
+    }, [allWordsInRound.length, endRoundProps]);
 
     return (
         <Container>
