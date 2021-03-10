@@ -1,6 +1,9 @@
 import styled from "styled-components"
 
 export const SvgCircleStyle = styled.div`
+    position: relative;
+    overflow: hidden;
+    
     width: 100px;
     height: 100px;
 `;

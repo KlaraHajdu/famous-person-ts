@@ -1,13 +1,23 @@
 import styled from 'styled-components'
 
-
 export const MainTile = styled.div`
-    margin: 3em auto;
-    width: 40%;
-    background-color: rgba(255, 255, 255, 0.9);
-    padding: 2em;
-    border-radius: 10px;
     z-index: 0;
+
+    width: 40%;
+    @media screen and (max-width: 1000px) {
+        width:60%;
+    }
+    @media screen and (max-width: 400px) {
+        width:90%;
+    }
+
+    margin: 3rem auto;    
+
+    padding: 2em;
+
+    border-radius: 10px;
+
+    background-color: rgba(255, 255, 255, 0.9);
 `
 
 export const gameTheme = {

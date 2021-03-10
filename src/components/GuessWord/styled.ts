@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import Button from "react-bootstrap/Button";
 
 export const Container = styled.div`
     display:flex;
@@ -19,16 +20,26 @@ export const WordBadge = styled.span`
     display: flex; 
     flex-wrap: wrap;  
     justify-content: center; 
+
     height: 100%;
-    background-color:#ffc107;
-    border-radius: 5px;
-    font-size: 24px;
-    font-weight: 500;
+
     padding: 5px;
     padding-bottom: 5px;
 
+    border-radius: 5px;
+
+    font-size: 24px;
+    font-weight: 500;
+    word-break: break-all;
+
+    background-color:#ffc107;
+    
     @media screen and (max-width: 800px) {
-        font-size: 2.5vw;
+        font-size: 1rem;
         min-height:36px;
     }
+`
+
+export const StyledButton = styled(Button)`
+    margin-left: 10px;
 `

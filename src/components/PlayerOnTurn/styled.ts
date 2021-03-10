@@ -6,11 +6,13 @@ export const Container = styled.div`
 `
 
 export const CountdownItemStyle = styled.div`
-position: relative;
-display: flex;
-justify-content: center;
-align-items: center;
-margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    position: relative;
+
+    margin-top: 30px;
 `
 
 export const StyledRow = styled.div`
@@ -18,6 +20,7 @@ export const StyledRow = styled.div`
 `
 
 export const CounterStyle = styled.div`
-position: absolute;
-color: orange;
+    position: absolute;
+    
+    color: orange;
 `

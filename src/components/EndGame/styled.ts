@@ -4,42 +4,57 @@ import { ReactComponent as Balloon } from "../../static/1524086080.svg";
 import { gameTheme } from "../../Theme/theme"
 
 export const StyledBalloon = styled(Balloon) <{ balloontop: number, left: number }>`
-    top: ${(props: { balloontop: number; }) => props.balloontop}px;
-    height: 300px;
     position: absolute;
-    z-index: 1;
+    top: ${(props: { balloontop: number; }) => props.balloontop}px;
     left: ${(props: { left: number; }) => props.left}%;
+    @media screen and (max-width: 600px) {
+        left: ${(props: { left: number; }) => props.left == 73? 5 : props.left}%;
+    }
+    z-index: 1;
+    
+    height: 300px;
     width: 120px;
 `
 export const StyledBadge = styled(Badge)<{ variant: string }>`
-    variant: ${(props: { variant: string; }) => props.variant};
     margin-right: 5px;
     margin-left: 5px;
+
+    variant: ${(props: { variant: string; }) => props.variant};
 `
 
 export const MainTile = styled.div`
     display: flex; 
     flex-flow: column wrap;
     justify-content: center;
-    margin: 3em auto;
-    width: 40%;
-    background-color: ${gameTheme.whiteBackgroundColor};
-    padding: 2em;
-    border-radius: 10px;
+    align-items: center;
+    
     z-index: 0;
+
+    width: 40%;
+    @media screen and (max-width: 600px) {
+        width: 90%;
+        
+    }
+
+    margin: 3em auto;
+    padding: 2em;
+
+    border-radius: 10px;
+
+    background-color: ${gameTheme.whiteBackgroundColor};
 `
 
 export const TitleContainer = styled.div`
-    display: flex;
-    justify-content: center;
-    line-height: 18px;
     margin: 1rem;
-    font-weight: 500;
+
+    line-height: 25px;
     font-size: 1.5rem;
+    font-weight: 500;
 `
 
 export const ResultsContainer = styled.div`
     display: flex;
     justify-content: center;
+    
     line-height: 18px;
 `

@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import Button from "react-bootstrap/Button";
 import { selectAllWordsInRound, selectOwnTeam, selectRound } from "../../store/slices/game/gameSelector";
 import { asyncGameActions } from "../../store/slices/game/slice";
 import DeleteDuplicateWord from "../DeleteDuplicateWord/DeleteDuplicateWord";
-import { WordBadge, Container, WordContainer, DuplicateContainer } from "./styled";
+import { WordBadge, Container, WordContainer, DuplicateContainer, StyledButton } from "./styled";
 
 export default function GuessWord(props: any) {
     const [word, setWord] = useState<string | undefined>();
@@ -55,9 +54,9 @@ export default function GuessWord(props: any) {
         <Container>
             <WordContainer>
                 <WordBadge data-testid="word-element">{word}</WordBadge>
-                <Button onClick={scoreWordGuessed} data-testid="guessed-word-button">
+                <StyledButton onClick={scoreWordGuessed} data-testid="guessed-word-button">
                     Guessed
-                </Button>
+                </StyledButton>
             </WordContainer>
             <DuplicateContainer>
                 {round === 1 && word && <DeleteDuplicateWord word={word} getNewWord={getNewWord} />}

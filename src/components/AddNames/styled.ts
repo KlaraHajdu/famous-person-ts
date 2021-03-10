@@ -3,11 +3,17 @@ import Row from "react-bootstrap/Row";
 import { gameTheme } from "../../Theme/theme"
 
 export const MiddleContainerInThreeColumns = styled.div`
-    margin: 3em auto;
     width: 80%;
-    background-color:  ${gameTheme.whiteBackgroundColor};;
+    @media screen and (max-width: 400px) {
+        width:90%;
+    }
+
+    margin: 3em auto;
     padding: 2em;
+
     border-radius: 10px;
+    
+    background-color:  ${gameTheme.whiteBackgroundColor};;
 `;
 
 export const StyledRow = styled(Row)`

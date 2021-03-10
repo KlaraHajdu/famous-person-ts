@@ -4,11 +4,19 @@ import Badge from "react-bootstrap/Badge";
 import Row from "react-bootstrap/Row";
 
 export const MiddleContainerInThreeColumns = styled.div`
-    margin: 3em auto;
     width: 80%;
-    background-color: ${gameTheme.whiteBackgroundColor};
+    @media screen and (max-width: 400px) {
+        width:90%;
+    }
+
+    margin: auto;
+    margin-top: 3rem; 
+
     padding: 2em;
+
     border-radius: 10px;
+
+    background-color: ${gameTheme.whiteBackgroundColor};
 `
 
 export const StyledBadge = styled(Badge)<{ team: string }>`
@@ -19,5 +27,8 @@ export const StyledSpan = styled.span`
 `
 
 export const StyledRow = styled(Row)`
-    width: 100vw;
+    width: 100%;
+    
+    margin-right: 0px;
+    margin-left: 0px;
 `

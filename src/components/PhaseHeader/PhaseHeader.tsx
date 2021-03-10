@@ -4,6 +4,7 @@ import Badge from "react-bootstrap/Badge";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { selectGameId, selectGameMaster, selectOwnName } from "../../store/slices/game/gameSelector";
+import { Subtitle, Title } from "./styled";
 
 type propsType = {
     title: string;
@@ -17,7 +18,7 @@ export default function PhaseHeader({ title, subtitle }: propsType) {
 
     return (
         <>
-            <h4 data-testid="own-name">Hello {ownName}!</h4>
+            <Title data-testid="own-name">Hello {ownName}!</Title>
             <Row>
                 <Col>
                     <h6>
@@ -25,7 +26,7 @@ export default function PhaseHeader({ title, subtitle }: propsType) {
                     </h6>
                 </Col>
                 <Col>
-                    <h6 data-testid="game-master">Game master: {gameMaster} </h6>
+                    <Subtitle data-testid="game-master">Game master: {gameMaster}</Subtitle>
                 </Col>
             </Row>
             <hr />
