@@ -16,8 +16,8 @@ describe("PlayersTable component", () => {
         render(<PlayersTable title="Players" players={["player1", "player2"]} />);
 
         const player1 = await screen.findByText(/player1/i);
-        const player2 = await screen.findByText(/player1/i);
         expect(player1).not.toBeNull();
+        const player2 = await screen.findByText(/player1/i);
         expect(player2).not.toBeNull();
     });
 });

@@ -9,6 +9,7 @@ import PhaseHeader from "../PhaseHeader/PhaseHeader";
 import TeamContainer from "../TeamContainer/TeamContainer";
 import GamePhase from "../../types/GamePhase";
 import { MiddleContainerInThreeColumns, StyledRow } from "./styled";
+import TeamType from "../../types/TeamType";
 
 function AddNames() {
     const NUMBER_OF_NAMES_TO_START_GAME = CONSTANTS.NUMBER_OF_NAMES_TO_START_GAME;
@@ -23,7 +24,7 @@ function AddNames() {
         }
 
         const changeGamePhase = async () => {
-            dispatch(asyncGamePhaseActions.changeGamePhase(GamePhase.PLAY_GAME));
+            await dispatch(asyncGamePhaseActions.changeGamePhase(GamePhase.PLAY_GAME));
         };
 
         if (namesSubmitted.length === NUMBER_OF_NAMES_TO_START_GAME) {
@@ -34,7 +35,7 @@ function AddNames() {
     return (
             <StyledRow>
                 <Col xs={12} md={3}>
-                    <TeamContainer team="blueTeam" />
+                    <TeamContainer team={TeamType.BlueTeam} />
                 </Col>
                 <Col xs={12} md={6}>
                     <MiddleContainerInThreeColumns>
@@ -43,7 +44,7 @@ function AddNames() {
                     </MiddleContainerInThreeColumns>
                 </Col>
                 <Col xs={12} md={3}>
-                    <TeamContainer team="greenTeam" />
+                    <TeamContainer team={TeamType.GreenTeam} />
                 </Col>
             </StyledRow>
     );

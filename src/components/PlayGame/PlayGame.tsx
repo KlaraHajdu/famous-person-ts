@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import Col from "react-bootstrap/Col";
 import UIfx from "uifx";
+import Col from "react-bootstrap/Col";
 import {
     selectBluePlayerIndex,
     selectBlueTeam,
@@ -15,13 +15,15 @@ import {
     selectTurnOngoing,
 } from "../../store/slices/game/gameSelector";
 import { asyncGameActions } from "../../store/slices/game/slice";
+import { asyncGamePhaseActions } from "../../store/slices/gamePhase/slice";
 import toneAudio from "../../static/tone.mp3";
 import PhaseHeader from "../PhaseHeader/PhaseHeader";
 import TeamContainer from "../TeamContainer/TeamContainer";
 import PlayerOnTurn from "../PlayerOnTurn/PlayerOnTurn";
 import PlayGameMaster from "../PlayGameMaster/PlayGameMaster";
 import { MiddleContainerInThreeColumns, StyledBadge, StyledSpan, StyledRow as Row } from "./styled";
-import { asyncGamePhaseActions } from "../../store/slices/gamePhase/slice";
+import TeamType from "../../types/TeamType";
+import IndexType from "../../types/IndexType";
 
 function PlayGame() {
     const gameId = useSelector(selectGameId);
@@ -42,25 +44,25 @@ function PlayGame() {
 
     const endTurn = async () => {
         dispatch(asyncGameActions.updateTurnOngoing(false));
-        const nextTeam = teamOnTurn === "greenTeam" ? "blueTeam" : "greenTeam";
+        const nextTeam = teamOnTurn === TeamType.GreenTeam ? TeamType.BlueTeam : TeamType.GreenTeam;
         dispatch(asyncGameActions.updateTeamOnTurn(nextTeam));
-        if (teamOnTurn === "greenTeam") {
+        if (teamOnTurn === TeamType.GreenTeam) {
             if (greenPlayerIndex === greenTeam.length - 1) {
-                dispatch(asyncGameActions.updatePlayerIndex({ teamIndex: "greenPlayerIndex", nextIndex: 0 }));
+                dispatch(asyncGameActions.updatePlayerIndex({ teamIndex: IndexType.GreenPlayerIndex, nextIndex: 0 }));
             } else {
                 dispatch(
                     asyncGameActions.updatePlayerIndex({
-                        teamIndex: "greenPlayerIndex",
+                        teamIndex: IndexType.GreenPlayerIndex,
                         nextIndex: greenPlayerIndex + 1,
                     })
                 );
             }
         } else {
             if (bluePlayerIndex === blueTeam.length - 1) {
-                dispatch(asyncGameActions.updatePlayerIndex({ teamIndex: "bluePlayerIndex", nextIndex: 0 }));
+                dispatch(asyncGameActions.updatePlayerIndex({ teamIndex: IndexType.BluePlayerIndex, nextIndex: 0 }));
             } else {
                 dispatch(
-                    asyncGameActions.updatePlayerIndex({ teamIndex: "bluePlayerIndex", nextIndex: bluePlayerIndex + 1 })
+                    asyncGameActions.updatePlayerIndex({ teamIndex: IndexType.BluePlayerIndex, nextIndex: bluePlayerIndex + 1 })
                 );
             }
         }
@@ -99,9 +101,9 @@ function PlayGame() {
     }, [round]);
 
     useEffect(() => {
-        if (ownName === gameMaster && teamOnTurn === "greenTeam" && greenTeam.length > 2) {
+        if (ownName === gameMaster && teamOnTurn === TeamType.GreenTeam && greenTeam.length > 2) {
             setCanDelete(true);
-        } else if (ownName === gameMaster && teamOnTurn === "blueTeam" && blueTeam.length > 2) {
+        } else if (ownName === gameMaster && teamOnTurn === TeamType.BlueTeam && blueTeam.length > 2) {
             setCanDelete(true);
         } else {
             setCanDelete(false);
@@ -109,7 +111,7 @@ function PlayGame() {
     }, [blueTeam.length, gameMaster, greenTeam.length, ownName, teamOnTurn]);
 
     useEffect(() => {
-        if (teamOnTurn === "greenTeam") {
+        if (teamOnTurn === TeamType.GreenTeam) {
             setPlayerOnTurn(greenTeam[greenPlayerIndex]);
         } else {
             setPlayerOnTurn(blueTeam[bluePlayerIndex]);
@@ -126,14 +128,14 @@ function PlayGame() {
     return (
         <Row>
             <Col xs={12} md={3}>
-                <TeamContainer team="blueTeam" />
+                <TeamContainer team={TeamType.BlueTeam} />
             </Col>
             <Col xs={12} md={6}>
                 <MiddleContainerInThreeColumns>
                     <PhaseHeader title="" subtitle={subTitle} />
                     The{" "}
                     <StyledBadge team={teamOnTurn} data-testid="team-on-turn">
-                        {teamOnTurn === "greenTeam" ? "green" : "blue"} team
+                        {teamOnTurn === TeamType.GreenTeam ? "green" : "blue"} team
                     </StyledBadge>{" "}
                     is guessing. It is <StyledSpan data-testid="player-on-turn"> {playerOnTurn} </StyledSpan>'s turn
                     now.
@@ -142,7 +144,7 @@ function PlayGame() {
                 </MiddleContainerInThreeColumns>
             </Col>
             <Col xs={12} md={3}>
-                <TeamContainer team="greenTeam" />
+                <TeamContainer team={TeamType.GreenTeam} />
             </Col>
         </Row>
     );

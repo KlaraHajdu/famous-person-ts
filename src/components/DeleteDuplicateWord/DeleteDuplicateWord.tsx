@@ -21,7 +21,6 @@ export default function DeleteDuplicateWord(props: DeleteDuplicateProps) {
     });
 
     const deleteDuplicateWord = () => {
-        console.group(props.word);
         dispatch(asyncGameActions.deleteDuplicateWord(props.word));
     };
 

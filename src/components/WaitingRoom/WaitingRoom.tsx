@@ -10,13 +10,14 @@ function WaitingRoom() {
     const ownName = useSelector(selectOwnName);
     const gameMaster = useSelector(selectGameMaster);
     const players = useSelector(selectPlayers);
+    const isGameMaster = ownName === gameMaster;
 
     return (
         <MainTile>
             <PhaseHeader title="Waiting room" subtitle="" />
             <h5>Joined players</h5>
             <PlayersTable title={"Players"} players={players} />
-            {ownName === gameMaster && <WaitingRoomGameMasterPart />}
+            { isGameMaster && <WaitingRoomGameMasterPart />}
         </MainTile>
     );
 }

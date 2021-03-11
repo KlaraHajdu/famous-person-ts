@@ -4,6 +4,6 @@ import PlayGameMaster from "./PlayGameMaster";
 
 describe("PlayGameMaster component", () => {
     it("renders without crashing", () => {
-        render(<PlayGameMaster />);
+        render(<PlayGameMaster playerOnTurn="fake-player"/>);
     });
 });

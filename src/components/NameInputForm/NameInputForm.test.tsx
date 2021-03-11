@@ -5,6 +5,7 @@ import { Provider } from "react-redux";
 import configureMockStore from "redux-mock-store";
 import NameInputForm from "./NameInputForm";
 import userEvent from "@testing-library/user-event";
+import TeamType from "../../types/TeamType";
 
 const mockStore = configureMockStore([thunk]);
 const store = mockStore({
@@ -12,7 +13,7 @@ const store = mockStore({
         gameId: 1111,
         ownName: "fake_gameMaster",
         gameMaster: "fake_gameMaster",
-        ownTeam: "greenTeam",
+        ownTeam: TeamType.GreenTeam,
         players: ["fake_player", "fake_gameMaster", "fake_player2", "fake_player3"],
         greenTeam: ["fake_player", "fake_gameMaster"],
         blueTeam: ["fake_player2", "fake_player3"],
@@ -28,7 +29,7 @@ const storeFinishedTeam = mockStore({
         gameId: 1111,
         ownName: "fake_gameMaster",
         gameMaster: "fake_gameMaster",
-        ownTeam: "blueTeam",
+        ownTeam: TeamType.BlueTeam,
         players: ["fake_player", "fake_gameMaster", "fake_player2", "fake_player3"],
         greenTeam: ["fake_player", "fake_gameMaster"],
         blueTeam: ["fake_player2", "fake_player3"],
@@ -99,8 +100,8 @@ describe("NameInputForm component", () => {
             </Provider>
         );
         const ownTeamNames = getByTestId("own-team-names");
-        const allNamesToSubmit = getByTestId("all-names");
         expect(ownTeamNames.textContent).toContain(1);
+        const allNamesToSubmit = getByTestId("all-names");
         expect(allNamesToSubmit.textContent).toContain(2);
     });
     it("shows the right message when the team has submitted enough names", async () => {

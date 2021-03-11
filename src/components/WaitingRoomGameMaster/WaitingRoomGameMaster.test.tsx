@@ -1,10 +1,10 @@
 import React from "react";
 import { render } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
 import thunk from "redux-thunk";
 import configureMockStore from "redux-mock-store";
 import WaitingRoomGameMasterPart from "./WaitingRoomGameMaster";
-import userEvent from "@testing-library/user-event";
 
 const mockStore = configureMockStore([thunk]);
 const storewithTwoPlayers = mockStore({
@@ -49,7 +49,6 @@ describe("WaitingRoomGameMAster component", () => {
         );
 
         const button = queryByTestId("form-team-button");
-
         expect(button).toBeNull();
     });
     it("shows form team button with enough players", () => {
@@ -60,7 +59,6 @@ describe("WaitingRoomGameMAster component", () => {
         );
 
         const button = queryByTestId("form-team-button");
-
         expect(button).toBeVisible();
     });
     it("dispatches action to form team", async () => {

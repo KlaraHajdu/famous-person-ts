@@ -8,7 +8,7 @@ export const StyledBalloon = styled(Balloon) <{ balloontop: number, left: number
     top: ${(props: { balloontop: number; }) => props.balloontop}px;
     left: ${(props: { left: number; }) => props.left}%;
     @media screen and (max-width: 600px) {
-        left: ${(props: { left: number; }) => props.left == 73? 5 : props.left}%;
+        left: ${(props: { left: number; }) => props.left > 70? 5 : props.left}%;
     }
     z-index: 1;
     
@@ -55,6 +55,6 @@ export const TitleContainer = styled.div`
 export const ResultsContainer = styled.div`
     display: flex;
     justify-content: center;
-    
+
     line-height: 18px;
 `

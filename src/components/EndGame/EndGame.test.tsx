@@ -3,6 +3,7 @@ import { render, screen } from "@testing-library/react";
 import thunk from "redux-thunk";
 import { Provider } from "react-redux";
 import configureMockStore from "redux-mock-store";
+import TeamType from "../../types/TeamType";
 import EndGame from "./EndGame";
 
 const mockStore = configureMockStore([thunk]);
@@ -11,10 +12,10 @@ const storeWithBlueWinner = mockStore({
         gameId: 1111,
         ownName: "fake_gameMaster",
         gameMaster: "fake_gameMaster",
-        ownTeam: "greenTeam",
+        ownTeam: TeamType.GreenTeam,
         players: ["fake_player", "fake_gameMaster", "fake_player2", "fake_player3"],
         round: 1,
-        teamOnTurn: "greenTeam",
+        teamOnTurn: TeamType.GreenTeam,
         greenPlayerIndex: 0,
         bluePlayerIndex: 0,
         turnOngoing: false,
@@ -37,10 +38,10 @@ const storeWithGreenWinner = mockStore({
         gameId: 1111,
         ownName: "fake_gameMaster",
         gameMaster: "fake_gameMaster",
-        ownTeam: "greenTeam",
+        ownTeam: TeamType.GreenTeam,
         players: ["fake_player", "fake_gameMaster", "fake_player2", "fake_player3"],
         round: 1,
-        teamOnTurn: "greenTeam",
+        teamOnTurn: TeamType.GreenTeam,
         greenPlayerIndex: 0,
         bluePlayerIndex: 0,
         turnOngoing: false,
@@ -63,10 +64,10 @@ const storeWithDraw = mockStore({
         gameId: 1111,
         ownName: "fake_gameMaster",
         gameMaster: "fake_gameMaster",
-        ownTeam: "greenTeam",
+        ownTeam: TeamType.GreenTeam,
         players: ["fake_player", "fake_gameMaster", "fake_player2", "fake_player3"],
         round: 1,
-        teamOnTurn: "greenTeam",
+        teamOnTurn: TeamType.GreenTeam,
         greenPlayerIndex: 0,
         bluePlayerIndex: 0,
         turnOngoing: false,
@@ -100,10 +101,10 @@ describe("EndGame component", () => {
         );
 
         const elementDraw = await screen.findByText("It is a draw!");
-        const elementCongrats = queryByTestId("congratulations");
-        const elementBalloon = queryByTestId("balloon");
         expect(elementDraw).not.toBeNull();
+        const elementCongrats = queryByTestId("congratulations");
         expect(elementCongrats).toBeNull();
+        const elementBalloon = queryByTestId("balloon");
         expect(elementBalloon).toBeNull();
     });
     it("shows the right messages for the winner", async () => {
@@ -114,16 +115,16 @@ describe("EndGame component", () => {
         );
 
         const elementDraw = queryByTestId("draw");
-        const elementCongrats = queryByTestId("congratulations");
-        const elementWinner = await screen.findByText("green team");
-        const blueScore = getByTestId("blue-score");
-        const greenScore = getByTestId("green-score");
-        const elementBalloon = queryByTestId("balloon");
-        expect(elementCongrats).not.toBeNull();
         expect(elementDraw).toBeNull();
+        const elementCongrats = queryByTestId("congratulations");
+        expect(elementCongrats).not.toBeNull();
+        const elementWinner = await screen.findByText("green team");
         expect(elementWinner).not.toBeNull();
+        const blueScore = getByTestId("blue-score");
         expect(blueScore.textContent).toContain(35);
+        const greenScore = getByTestId("green-score");
         expect(greenScore.textContent).toContain(55);
+        const elementBalloon = queryByTestId("balloon");
         expect(elementBalloon).not.toBeNull();
     });
     it("shows the right messages for the loser", async () => {
@@ -134,16 +135,16 @@ describe("EndGame component", () => {
         );
 
         const elementDraw = queryByTestId("It is a draw!");
-        const elementCongrats = queryByTestId("congratulations");
-        const elementWinner = await screen.findByText("blue team");
-        const blueScore = getByTestId("blue-score");
-        const greenScore = getByTestId("green-score");
-        const elementBalloon = queryByTestId("balloon");
         expect(elementDraw).toBeNull();
+        const elementCongrats = queryByTestId("congratulations");
         expect(elementCongrats).toBeNull();
+        const elementWinner = await screen.findByText("blue team");
         expect(elementWinner).not.toBeNull();
+        const blueScore = getByTestId("blue-score");
         expect(blueScore.textContent).toContain(55);
+        const greenScore = getByTestId("green-score");
         expect(greenScore.textContent).toContain(35);
+        const elementBalloon = queryByTestId("balloon");
         expect(elementBalloon).toBeNull();
     });
 });

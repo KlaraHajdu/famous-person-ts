@@ -3,6 +3,7 @@ import { render } from "@testing-library/react";
 import thunk from "redux-thunk";
 import { Provider } from "react-redux";
 import configureMockStore from "redux-mock-store";
+import TeamType from "../../types/TeamType";
 import WaitingRoom from "./WaitingRoom";
 
 const mockStore = configureMockStore([thunk]);
@@ -11,10 +12,10 @@ const store = mockStore({
         gameId: 1111,
         ownName: "fake_gameMaster",
         gameMaster: "fake_gameMaster",
-        ownTeam: "greenTeam",
+        ownTeam: TeamType.GreenTeam,
         players: ["fake_player", "fake_gameMaster", "fake_player2", "fake_player3"],
         round: 1,
-        teamOnTurn: "greenTeam",
+        teamOnTurn: TeamType.GreenTeam,
         greenPlayerIndex: 0,
         bluePlayerIndex: 0,
         turnOngoing: false,

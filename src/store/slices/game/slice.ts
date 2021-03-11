@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import moment from "moment";
 import { databaseApi } from "../../../services/FirebaseRD/fbDatabase";
 import GamePhase from "../../../types/GamePhase";
+import TeamType from "../../../types/TeamType";
 import { formTeams } from "../../../utils/randomUtil";
 import RootState from "../../RootState";
 import { asyncGamePhaseActions } from "../gamePhase/slice";
@@ -100,7 +101,7 @@ const gameSlice = createSlice({
                         sessionStorage.setItem("blueTeam",  (Object.values(action.payload.teams!.blueTeam).join(",")))
 
                         if (state.ownName && state.greenTeam.includes(state.ownName)) {
-                            state.ownTeam = "greenTeam"
+                            state.ownTeam = TeamType.GreenTeam
                             sessionStorage.setItem("ownTeam", "greenTeam")
                         }
                         else {
@@ -425,7 +426,7 @@ export const updateScore = createAsyncThunk<string, string, { state: RootState }
         const { game } = state
         const { gameId, greenTeamScore, blueTeamScore} = game 
         const ownTeam = payload
-        const ownScore = ownTeam === "greenTeam"? greenTeamScore : blueTeamScore
+        const ownScore = ownTeam === TeamType.GreenTeam? greenTeamScore : blueTeamScore
         try {
             await databaseApi.updateScore(gameId!, ownTeam, ownScore+1)
             return 'score_updated_in_database'

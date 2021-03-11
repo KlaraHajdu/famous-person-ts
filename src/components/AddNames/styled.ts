@@ -9,10 +9,11 @@ export const MiddleContainerInThreeColumns = styled.div`
     }
 
     margin: 3em auto;
+    
     padding: 2em;
 
     border-radius: 10px;
-    
+
     background-color:  ${gameTheme.whiteBackgroundColor};;
 `;
 

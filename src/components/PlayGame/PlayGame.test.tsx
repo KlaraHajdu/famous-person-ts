@@ -3,6 +3,7 @@ import { render } from "@testing-library/react";
 import { Provider } from "react-redux";
 import thunk from "redux-thunk";
 import configureMockStore from "redux-mock-store";
+import TeamType from "../../types/TeamType";
 import PlayGame from "./PlayGame";
 
 const mockStore = configureMockStore([thunk]);
@@ -11,10 +12,10 @@ const store = mockStore({
         gameId: 1111,
         ownName: "fake_gameMaster",
         gameMaster: "fake_gameMaster",
-        ownTeam: "greenTeam",
+        ownTeam: TeamType.GreenTeam,
         players: ["fake_player", "fake_gameMaster", "fake_player2", "fake_player3", "fake_player5", "fake_player6"],
         round: 1,
-        teamOnTurn: "greenTeam",
+        teamOnTurn: TeamType.GreenTeam,
         greenPlayerIndex: 0,
         bluePlayerIndex: 0,
         turnOngoing: false,
@@ -37,10 +38,10 @@ const storeWith4Players = mockStore({
         gameId: 1111,
         ownName: "fake_gameMaster",
         gameMaster: "fake_gameMaster",
-        ownTeam: "greenTeam",
+        ownTeam: TeamType.GreenTeam,
         players: ["fake_player", "fake_gameMaster", "fake_player2", "fake_player3", "fake_player5", "fake_player6"],
         round: 2,
-        teamOnTurn: "greenTeam",
+        teamOnTurn: TeamType.GreenTeam,
         greenPlayerIndex: 0,
         bluePlayerIndex: 0,
         turnOngoing: false,
@@ -63,10 +64,10 @@ const storeOfFakePlayer = mockStore({
         gameId: 1111,
         ownName: "fake_player",
         gameMaster: "fake_gameMaster",
-        ownTeam: "greenTeam",
+        ownTeam: TeamType.GreenTeam,
         players: ["fake_player", "fake_gameMaster", "fake_player2", "fake_player3", "fake_player5", "fake_player6"],
         round: 1,
-        teamOnTurn: "greenTeam",
+        teamOnTurn: TeamType.GreenTeam,
         greenPlayerIndex: 0,
         bluePlayerIndex: 0,
         turnOngoing: false,
@@ -176,7 +177,7 @@ describe("PlayGame component", () => {
 
         expect(element).toBeNull();
     });
-    it("shows the button for button for starting the turn for the player on turn", () => {
+    it("shows the button for starting the turn for the player on turn", () => {
         const { getByTestId } = render(
             <Provider store={storeOfFakePlayer}>
                 <PlayGame />

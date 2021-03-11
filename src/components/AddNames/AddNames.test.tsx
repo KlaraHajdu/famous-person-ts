@@ -52,6 +52,15 @@ describe("AddNames component", () => {
 
         expect(fakeDispatch).toHaveBeenCalled();
     });
+    it("does not dispatch gamephase change action if user is game master but names are still incomplete", async () => {
+        mockedUseSelector.mockImplementationOnce(() => ["fake_name", "fake_name2", "fake_name3"]);
+        mockedUseSelector.mockImplementationOnce(() => "fake_GameMaster");
+        mockedUseSelector.mockImplementationOnce(() => "fake_GameMaster");
+        mockedDispatch.mockImplementationOnce(() => fakeDispatch);
+        render(<AddNames />);
+
+        expect(fakeDispatch).not.toHaveBeenCalled();
+    });
     it("does not dispatch gamephase change action if user is not game master and all names are added", async () => {
         mockedUseSelector.mockImplementationOnce(() => ["fake_name", "fake_name2", "fake_name3", "fake_name4"]);
         mockedUseSelector.mockImplementationOnce(() => "fake_user2");

@@ -2,33 +2,27 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { selectBlueTeamScore, selectGreenTeamScore, selectOwnTeam } from "../../store/slices/game/gameSelector";
+import TeamType from "../../types/TeamType";
 import { StyledBalloon as Balloon, StyledBadge as Badge, MainTile, ResultsContainer, TitleContainer } from "./styled";
 
 export default function EndGame() {
-    const [winnerTeam, setWinnerTeam] = useState<string>("");
-    const [iAmWinner, setIAmWinner] = useState<boolean | null>(null);
+    const [isWinner, setIsWinner] = useState<boolean | null>(null);
     const [balloonTop1, setBalloonTop1] = useState<number>(410);
     const [balloonTop2, setBalloonTop2] = useState<number>(390);
     const [balloonTop3, setBalloonTop3] = useState<number>(410);
     const blueTeamScore = useSelector(selectBlueTeamScore);
     const greenTeamScore = useSelector(selectGreenTeamScore);
     const ownTeam = useSelector(selectOwnTeam);
+    const winnerTeam: string = blueTeamScore > greenTeamScore? "blue team" : "green team";
+
 
     useEffect(() => {
-        if (blueTeamScore > greenTeamScore) {
-            setWinnerTeam("blue team");
+        if (ownTeam === TeamType.GreenTeam && winnerTeam === "green team") {
+            setIsWinner(true);
+        } else if (ownTeam === TeamType.BlueTeam && winnerTeam === "blue team") {
+            setIsWinner(true);
         } else {
-            setWinnerTeam("green team");
-        }
-    }, [blueTeamScore, greenTeamScore]);
-
-    useEffect(() => {
-        if (ownTeam === "greenTeam" && winnerTeam === "green team") {
-            setIAmWinner(true);
-        } else if (ownTeam === "blueTeam" && winnerTeam === "blue team") {
-            setIAmWinner(true);
-        } else {
-            setIAmWinner(false);
+            setIsWinner(false);
         }
     }, [ownTeam, winnerTeam]);
 
@@ -92,9 +86,9 @@ export default function EndGame() {
                         {greenTeamScore}{" "}
                     </Badge>
                 </ResultsContainer>
-                {iAmWinner && <TitleContainer data-testid="congratulations">Congratulations! </TitleContainer>}
+                {isWinner && <TitleContainer data-testid="congratulations">Congratulations! </TitleContainer>}
             </MainTile>
-            {iAmWinner && (
+            {isWinner && (
                 <>
                     <Balloon balloontop={balloonTop1} left="20" data-testid="balloon" />
                     <Balloon balloontop={balloonTop2} left="47" />

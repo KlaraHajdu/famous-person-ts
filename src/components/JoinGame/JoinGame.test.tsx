@@ -92,6 +92,22 @@ describe("JoinGame component", () => {
 
         expect(mockDispatch).toBeCalledTimes(2);
     });
+    it("shows helper text when game has already started", async () => {
+        mockDispatch.mockResolvedValueOnce({ payload: true });
+        mockDispatch.mockResolvedValueOnce({ payload: false });
+        const { getByTestId } = render(<JoinGame />);
+        await act(async () => {
+            const nameInput = getByTestId("name-input");
+            await userEvent.type(nameInput, "User");
+            const gameIdInput = getByTestId("gameid-input");
+            await userEvent.type(gameIdInput, "5453");
+            const startButton = getByTestId("submit-button");
+            await userEvent.click(startButton);
+        });
+
+        const helperTextField = getByTestId("helper-text-gameid");
+        expect(helperTextField.textContent).toEqual("You cannot join a game, which has already started!");;
+    });
     it("dispatches action to check if player name is taken if game ID and gamePhase are correct", async () => {
         mockDispatch.mockResolvedValueOnce({ payload: true });
         mockDispatch.mockResolvedValueOnce({ payload: true });

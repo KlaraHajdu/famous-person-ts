@@ -2,6 +2,7 @@ import thunk from "redux-thunk";
 import configureMockStore from "redux-mock-store";
 import gameReducer, { gameActions, asyncGameActions } from "./slice";
 import { databaseApi } from "../../../services/FirebaseRD/fbDatabase";
+import TeamType from "../../../types/TeamType";
 
 const mockStore = configureMockStore([thunk]);
 const store = mockStore({
@@ -9,10 +10,10 @@ const store = mockStore({
         gameId: 1111,
         ownName: "fake_player",
         gameMaster: "fake_gameMaster",
-        ownTeam: "greenTeam",
+        ownTeam: TeamType.GreenTeam,
         players: ["fake_player", "fake_gameMaster", "fake_player2", "fake_player3", "fake_player5", "fake_player6"],
         round: 1,
-        teamOnTurn: "greenTeam",
+        teamOnTurn: TeamType.GreenTeam,
         greenPlayerIndex: 0,
         bluePlayerIndex: 0,
         turnOngoing: false,
@@ -35,10 +36,10 @@ const storeAfterPlayerOnTurnDeleted = mockStore({
         gameId: 1111,
         ownName: "fake_player",
         gameMaster: "fake_gameMaster",
-        ownTeam: "greenTeam",
+        ownTeam: TeamType.GreenTeam,
         players: ["fake_player", "fake_gameMaster", "fake_player2", "fake_player3", "fake_player5", "fake_player6"],
         round: 1,
-        teamOnTurn: "greenTeam",
+        teamOnTurn: TeamType.GreenTeam,
         greenPlayerIndex: 3,
         bluePlayerIndex: 3,
         turnOngoing: false,
@@ -93,12 +94,12 @@ describe("Game slice", () => {
     
     })
     it("reducer with GAME_UPDATED action sets the state of teamOnTurn to the correct value", () => {
-        const state: any = { teamOnTurn: "greenTeam" }
-        const newState = { teamOnTurn: "blueTeam" }
+        const state: any = { teamOnTurn: TeamType.GreenTeam }
+        const newState = { teamOnTurn: TeamType.BlueTeam }
         const nextState = gameReducer(state, gameActions.GAME_UPDATED(newState))
     
         expect(nextState).toEqual(newState)
-        expect(sessionStorage.getItem("teamOnTurn")).toEqual("blueTeam")
+        expect(sessionStorage.getItem("teamOnTurn")).toEqual(TeamType.BlueTeam)
     })
     it("reducer with GAME_UPDATED action sets the state of greenPlayerIndex to the correct value", () => {
         const state: any = { greenPlayerIndex: 1 }
@@ -162,7 +163,7 @@ describe("Game slice", () => {
             greenTeam: ["fake_player", "fake_gameMaster", "fake_player2"],
             blueTeam: ["fake_player3", "fake_player4", "fake_player5"],
             ownName: "fake_player4",    
-            ownTeam: "blueTeam",   
+            ownTeam: TeamType.BlueTeam,   
         }
         expect(nextState).toEqual(updatedStateNewTeams)
         expect(sessionStorage.getItem("greenTeam")).toEqual("fake_player,fake_gameMaster,fake_player2")
@@ -229,12 +230,12 @@ describe("Game slice", () => {
         expect(sessionStorage.getItem("ownName")).toEqual("fake_player")
     })
     it("reducer with TEAMONTURN_UPDATED action sets the state to the correct value", () => {
-        const state: any = { teamOnTurn: "blueTeam" }
-        const newState = { teamOnTurn: "greenTeam" }
+        const state: any = { teamOnTurn: TeamType.BlueTeam }
+        const newState = { teamOnTurn: TeamType.GreenTeam }
         const nextState = gameReducer(state, gameActions.TEAMONTURN_UPDATED(newState))
         
         expect(nextState).toEqual(newState)
-        expect(sessionStorage.getItem("teamOnTurn")).toEqual("greenTeam")
+        expect(sessionStorage.getItem("teamOnTurn")).toEqual(TeamType.GreenTeam)
     })
     it("reducer with GREENPLAYERINDEX_UPDATED action sets the state to the correct value", () => {
         const state: any = { greenPlayerIndex: 2}
@@ -616,7 +617,7 @@ describe("updateTeamOnTurn async action", () => {
     it("returns the right action if teamOnturn is updated", async () => {
         mockedDatabaseApi.updateTeamOnTurn.mockResolvedValueOnce()
 
-        await store.dispatch(asyncGameActions.updateTeamOnTurn("greenTeam"))
+        await store.dispatch(asyncGameActions.updateTeamOnTurn(TeamType.GreenTeam))
 
         const actions = store.getActions()
         expect(actions[1].type).toEqual('game/updateteamonturn/fulfilled')
@@ -625,7 +626,7 @@ describe("updateTeamOnTurn async action", () => {
     it("returns the right error action if database is down", async () => {
         mockedDatabaseApi.updateTeamOnTurn.mockRejectedValueOnce("database down")
 
-        await store.dispatch(asyncGameActions.updateTeamOnTurn("blueTeam"))
+        await store.dispatch(asyncGameActions.updateTeamOnTurn(TeamType.BlueTeam))
 
         const actions = store.getActions()
         expect(actions[1].type).toEqual('game/updateteamonturn/rejected')
@@ -734,7 +735,7 @@ describe("deletePlayer async action", () => {
     it("returns the right action if player is deleted", async () => {
         mockedDatabaseApi.deletePlayer.mockResolvedValueOnce()
 
-        await store.dispatch(asyncGameActions.deletePlayer({team: "greenTeam", players: ["player1", "player2"]}))
+        await store.dispatch(asyncGameActions.deletePlayer({team: TeamType.GreenTeam, players: ["player1", "player2"]}))
 
         const actions = store.getActions()
         expect(actions[1].type).toEqual('game/deleteplayer/fulfilled')
@@ -743,7 +744,7 @@ describe("deletePlayer async action", () => {
     it("returns the right error action if database is down", async () => {
         mockedDatabaseApi.deletePlayer.mockRejectedValueOnce("database down")
 
-        await store.dispatch(asyncGameActions.deletePlayer({team: "greenTeam", players: ["player1", "player2"]}))
+        await store.dispatch(asyncGameActions.deletePlayer({team: TeamType.GreenTeam, players: ["player1", "player2"]}))
 
         const actions = store.getActions()
         expect(actions[1].type).toEqual('game/deleteplayer/rejected')
@@ -761,7 +762,7 @@ describe("updateScore async action", () => {
     it("returns the right action if score is updated", async () => {
         mockedDatabaseApi.updateScore.mockResolvedValueOnce()
 
-        await store.dispatch(asyncGameActions.updateScore("greenTeam"))
+        await store.dispatch(asyncGameActions.updateScore(TeamType.GreenTeam))
 
         const actions = store.getActions()
         expect(actions[1].type).toEqual('game/updatescore/fulfilled')
@@ -770,7 +771,7 @@ describe("updateScore async action", () => {
     it("returns the right error action if database is down", async () => {
         mockedDatabaseApi.updateScore.mockRejectedValueOnce("database down")
 
-        await store.dispatch(asyncGameActions.updateScore("greenTeam"))
+        await store.dispatch(asyncGameActions.updateScore(TeamType.GreenTeam))
 
         const actions = store.getActions()
         expect(actions[1].type).toEqual('game/updatescore/rejected')

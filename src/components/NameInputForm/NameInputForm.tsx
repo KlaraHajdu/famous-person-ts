@@ -4,6 +4,7 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { selectBlueTeamNames, selectGreenTeamNames, selectOwnTeam } from "../../store/slices/game/gameSelector";
 import { asyncGameActions } from "../../store/slices/game/slice";
+import TeamType from "../../types/TeamType";
 
 export default function NameInputForm(props: { numberOfNames: number }) {
     const { numberOfNames } = props;
@@ -39,7 +40,7 @@ export default function NameInputForm(props: { numberOfNames: number }) {
         if (!ownTeam) {
             return;
         }
-        if (ownTeam === "greenTeam") {
+        if (ownTeam === TeamType.GreenTeam) {
             setNamesSubmittedByTeam(greenTeamNames.length);
         } else {
             setNamesSubmittedByTeam(blueTeamNames.length);

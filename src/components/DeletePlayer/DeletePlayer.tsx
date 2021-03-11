@@ -10,6 +10,8 @@ import {
     selectTeamOnTurn,
 } from "../../store/slices/game/gameSelector";
 import { asyncGameActions } from "../../store/slices/game/slice";
+import IndexType from "../../types/IndexType";
+import TeamType from "../../types/TeamType";
 import { Container } from "./styled";
 
 type DeletePlayerProps = {
@@ -34,18 +36,18 @@ export default function DeletePlayer(props: DeletePlayerProps) {
     });
 
     const deletePlayer = async (player: string) => {
-        if (teamOnTurn === "blueTeam") {
+        if (teamOnTurn === TeamType.BlueTeam) {
             if (bluePlayerIndex === blueTeam.length - 1) {
-                dispatch(asyncGameActions.updatePlayerIndex({ teamIndex: "bluePlayerIndex", nextIndex: 0 }));
+                dispatch(asyncGameActions.updatePlayerIndex({ teamIndex: IndexType.BluePlayerIndex, nextIndex: 0 }));
             }
-            let reducedTeam = blueTeam.filter((pl: string) => pl !== player);
-            dispatch(asyncGameActions.deletePlayer({ team: "blueTeam", players: reducedTeam }));
+            const reducedTeam = blueTeam.filter((pl: string) => pl !== player);
+            dispatch(asyncGameActions.deletePlayer({ team: TeamType.BlueTeam, players: reducedTeam }));
         } else {
             if (greenPlayerIndex === greenTeam.length - 1) {
-                dispatch(asyncGameActions.updatePlayerIndex({ teamIndex: "greenPlayerIndex", nextIndex: 0 }));
+                dispatch(asyncGameActions.updatePlayerIndex({ teamIndex: IndexType.GreenPlayerIndex, nextIndex: 0 }));
             }
-            let reducedTeam = greenTeam.filter((pl: string) => pl !== player);
-            dispatch(asyncGameActions.deletePlayer({ team: "greenTeam", players: reducedTeam }));
+            const reducedTeam = greenTeam.filter((pl: string) => pl !== player);
+            dispatch(asyncGameActions.deletePlayer({ team: TeamType.GreenTeam, players: reducedTeam }));
         }
         props.handleClosing();
     };

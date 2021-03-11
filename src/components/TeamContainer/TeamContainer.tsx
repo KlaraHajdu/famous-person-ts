@@ -6,13 +6,14 @@ import {
     selectGreenTeam,
     selectGreenTeamScore,
 } from "../../store/slices/game/gameSelector";
+import TeamType from "../../types/TeamType";
 import { TeamContainerInThreeColumns } from "./styled";
 
-type TeamType = {
-    team: string;
-};
+type TeamContainerProps = {
+    team: TeamType
+}
 
-export default function TeamContainer(props: TeamType) {
+export default function TeamContainer(props: TeamContainerProps) {
     const greenTeam = useSelector(selectGreenTeam);
     const blueTeam = useSelector(selectBlueTeam);
     const greenScore = useSelector(selectGreenTeamScore);
@@ -21,7 +22,7 @@ export default function TeamContainer(props: TeamType) {
 
     useEffect(() => {
         let membersListText;
-        if (props.team === "greenTeam") {
+        if (props.team === TeamType.GreenTeam) {
             membersListText = greenTeam.join(", ");
         } else {
             membersListText = blueTeam && blueTeam.join(", ");
@@ -31,9 +32,9 @@ export default function TeamContainer(props: TeamType) {
 
     return (
         <TeamContainerInThreeColumns team={props.team}>
-            <h4>{props.team === "greenTeam" ? "Green team" : "Blue team"}</h4>
+            <h4>{props.team === TeamType.GreenTeam? "Green team" : "Blue team"}</h4>
             <div>Members: {members}</div>
-            <div>Score: {props.team === "greenTeam" ? greenScore : blueScore}</div>
+            <div>Score: {props.team === TeamType.GreenTeam ? greenScore : blueScore}</div>
         </TeamContainerInThreeColumns>
     );
 }

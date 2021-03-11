@@ -1,5 +1,6 @@
 import styled from "styled-components"
 import { gameTheme } from "../../Theme/theme";
+import TeamType from "../../types/TeamType";
 
 export const TeamContainerInThreeColumns = styled.div<{team: string}>`
     width: 80%;
@@ -15,5 +16,6 @@ export const TeamContainerInThreeColumns = styled.div<{team: string}>`
 
     color: white;
     
-    background-color: ${(props: any) => props.team === "greenTeam"? gameTheme.greenBackgroundColor : gameTheme.blueBackgroundColor };
+    background-color: ${(props: any) => 
+        props.team === TeamType.GreenTeam? gameTheme.greenBackgroundColor : gameTheme.blueBackgroundColor };
 `;

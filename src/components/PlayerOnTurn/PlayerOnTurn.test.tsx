@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
 import thunk from "redux-thunk";
 import configureMockStore from "redux-mock-store";
+import TeamType from "../../types/TeamType";
 import PlayerOnTurn from "./PlayerOnTurn";
 
 const mockStore = configureMockStore([thunk]);
@@ -12,10 +13,10 @@ const store = mockStore({
         gameId: 1111,
         ownName: "fake_player",
         gameMaster: "fake_gameMaster",
-        ownTeam: "greenTeam",
+        ownTeam: TeamType.GreenTeam,
         players: ["fake_player", "fake_gameMaster", "fake_player2", "fake_player3", "fake_player5", "fake_player6"],
         round: 1,
-        teamOnTurn: "greenTeam",
+        teamOnTurn: TeamType.GreenTeam,
         greenPlayerIndex: 0,
         bluePlayerIndex: 0,
         turnOngoing: false,
@@ -55,14 +56,14 @@ describe("PlayerOnTurn component", () => {
     it("renders without crashing", () => {
         render(
             <Provider store={store}>
-                <PlayerOnTurn />
+                <PlayerOnTurn endTurn={jest.fn()} />
             </Provider>
         );
     });
     it("shows the guessed word button if the player starts the turn", async () => {
         const { getByTestId } = render(
             <Provider store={store}>
-                <PlayerOnTurn />
+                <PlayerOnTurn  endTurn={jest.fn()} />
             </Provider>
         );
 
@@ -75,7 +76,7 @@ describe("PlayerOnTurn component", () => {
     it("does not show the guessed word button until the player starts the turn", async () => {
         const { queryByTestId } = render(
             <Provider store={store}>
-                <PlayerOnTurn />
+                <PlayerOnTurn  endTurn={jest.fn()} />
             </Provider>
         );
 
@@ -85,7 +86,7 @@ describe("PlayerOnTurn component", () => {
     it("dispatches turnOngoing action when the turn is started", async () => {
         const { getByTestId } = render(
             <Provider store={store}>
-                <PlayerOnTurn />
+                <PlayerOnTurn  endTurn={jest.fn()} />
             </Provider>
         );
 

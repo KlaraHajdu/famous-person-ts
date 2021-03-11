@@ -21,7 +21,6 @@ export default function PlayGameMaster(props: PlayGameMasterProps) {
     if (wantToDelete) {
         return (
             <div>
-                {" "}
                 <DeletePlayer handleClosing={handleClosing} playerOnTurn={props.playerOnTurn} />
             </div>
         );

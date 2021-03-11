@@ -1,5 +1,5 @@
 import React from "react";
-import { getByTestId, render } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import { Provider } from "react-redux";
 import userEvent from "@testing-library/user-event";
 import thunk from "redux-thunk";

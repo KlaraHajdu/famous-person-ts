@@ -30,10 +30,10 @@ describe("NameInputForm component", () => {
         );
 
         const ownName = getByTestId("own-name");
-        const gameMaster = getByTestId("game-master");
-        const gameId = getByTestId("gameId");
         expect(ownName.textContent).toContain("fake_player");
+        const gameMaster = getByTestId("game-master");
         expect(gameMaster.textContent).toContain("Game master: fake_gameMaster");
+        const gameId = getByTestId("gameId");
         expect(gameId.textContent).toContain(1111);
     });
     it("shows the title and subtitle", () => {
@@ -44,8 +44,8 @@ describe("NameInputForm component", () => {
         );
 
         const title = getByTestId("title");
-        const subtitle = getByTestId("subtitle");
         expect(title.textContent).toContain("Fake title");
+        const subtitle = getByTestId("subtitle");
         expect(subtitle.textContent).toContain("Fake subtitle");
     });
 });

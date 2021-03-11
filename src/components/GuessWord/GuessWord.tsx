@@ -6,12 +6,12 @@ import DeleteDuplicateWord from "../DeleteDuplicateWord/DeleteDuplicateWord";
 import { WordBadge, Container, WordContainer, DuplicateContainer, StyledButton } from "./styled";
 
 export default function GuessWord(props: any) {
-    const [word, setWord] = useState<string | undefined>();
-    const [buttonActive, setButtonActive] = useState(true);
     const ownTeam = useSelector(selectOwnTeam);
     const round = useSelector(selectRound);
-    const [wordDeleted, setWordDeleted] = useState(0);
     const allWordsInRound = useSelector(selectAllWordsInRound);
+    const [word, setWord] = useState<string | undefined>();
+    const [buttonActive, setButtonActive] = useState(true);
+    const [wordDeleted, setWordDeleted] = useState(0);
     const dispatch = useDispatch();
     const endRoundProps = props.endRound;
 
@@ -47,7 +47,6 @@ export default function GuessWord(props: any) {
         if (allWordsInRound.length === 0) {
             endRoundProps();
         }
-
     }, [allWordsInRound.length, endRoundProps]);
 
     return (
