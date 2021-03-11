@@ -4,9 +4,9 @@ An application created for playing a guessing game online by a group of 4-12 peo
 It is built with React - Typescript, Redux toolkit, Bootstrap and styled components, using Firebase Realtime Database.
 
 ## Project status
-This project is a rewrite of a previous Javascript project: https://github.com/KlaraHajdu/famousperson. It is written in Typescript, using Redux Toolkit. The current iteration focuses on adding tests to the slices and further refactoring. 
+This project is a rewrite of a previous Javascript project: https://github.com/KlaraHajdu/famousperson. It is written in Typescript, using Redux Toolkit. 
 
-The original JS app is deployed at: https://famous-person-guessing-game.web.app/
+The app is deployed at: https://famous-person-guessing-game.web.app/
 
 ## How to play the game
 
@@ -24,8 +24,11 @@ Variations: It is upon agreement if only real life persons or also fictious char
 Playing the game with the app: Start a new game as a game master and send the game ID to your friends to join. Submit names
 online, form random teams and let the game begin! When it is your turn just hit the button once you are ready and explain or pantomime the name appearing on your screen to your teammates. All you need in addition is a videoconferencing app to hear and see your teammates.
 
+## Screenshot from the app
 
-### Installation and Setup Instructions
+![Play game phase](src/static/screenshot.jpg?raw=true "Play game")
+
+## Installation and Setup Instructions
 
 `yarn start` Runs the app in the development mode. Open [http://localhost:3000](http://localhost:3000) to view it in the browser. Firebase related environment variables are needed to run the app locally. 
 
