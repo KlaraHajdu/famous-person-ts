@@ -28,7 +28,9 @@ export default function NameInputForm(props: { numberOfNames: number }) {
         }
     };
 
-    const submitName = async () => {
+    const submitName = async (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+        event.preventDefault();
+
         if (helperText) {
             return;
         }
@@ -74,7 +76,7 @@ export default function NameInputForm(props: { numberOfNames: number }) {
                     />
                 </Form.Group>
                 <Form.Text muted data-testid="helper-text">{helperText}</Form.Text>
-                <Button variant="warning" onClick={submitName} data-testid="submit-name">
+                <Button variant="warning" type= "submit" onClick={submitName} data-testid="submit-name">
                     Submit name
                 </Button>
             </Form>

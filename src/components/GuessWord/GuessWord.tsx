@@ -5,7 +5,11 @@ import { asyncGameActions } from "../../store/slices/game/slice";
 import DeleteDuplicateWord from "../DeleteDuplicateWord/DeleteDuplicateWord";
 import { WordBadge, Container, WordContainer, DuplicateContainer, StyledButton } from "./styled";
 
-export default function GuessWord(props: any) {
+type GuessWordProps = {
+    endRound: () => void
+}
+
+export default function GuessWord(props: GuessWordProps) {
     const ownTeam = useSelector(selectOwnTeam);
     const round = useSelector(selectRound);
     const allWordsInRound = useSelector(selectAllWordsInRound);

@@ -16,7 +16,7 @@ const gamePhaseSlice = createSlice({
             state.gamePhase = action.payload
             
         },
-        'HOWTOPLAYMODAL_TOGGLED': (state, action: PayloadAction<any>) => {
+        'HOWTOPLAYMODAL_TOGGLED': (state, action: PayloadAction<boolean>) => {
             state.modalOpened = action.payload
             
         }

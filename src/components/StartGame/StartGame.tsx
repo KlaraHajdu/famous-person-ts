@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import { useDispatch } from "react-redux";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -11,7 +11,7 @@ export default function StartGame() {
     const [helperText, setHelperText] = useState<string | null>(null);
     const dispatch = useDispatch();
 
-    const saveName = (e: any) => {
+    const saveName = (e: ChangeEvent<HTMLInputElement>) => {
         let name = e.target.value;
         if (name.length === 0) setHelperText("Name cannot be empty!");
         else if (name.length > 15) setHelperText("Name too long!");
@@ -23,7 +23,7 @@ export default function StartGame() {
 
     const generateId = async () => {
         let generatedId: number;
-        let gameIdExists: any;
+        let gameIdExists: boolean;
         do {
             generatedId = getRandomNumberFromTo(1000, 10000);
             const promise = await dispatch(asyncGameActions.checkIfGameExists(generatedId.toString()));
@@ -35,7 +35,9 @@ export default function StartGame() {
         return generatedId;
     };
 
-    const createNewGame = async () => {
+    const createNewGame = async (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+        event.preventDefault();
+
         if (!helperText) {
             const gameId = await generateId();
             if (!gameId) {
@@ -64,7 +66,7 @@ export default function StartGame() {
                     />
                     <Form.Text muted data-testid="helper-text">{helperText}</Form.Text>
                 </Form.Group>
-                <Button variant="warning" onClick={createNewGame} data-testid="submit-button">
+                <Button variant="warning" type="submit" onClick={createNewGame} data-testid="submit-button">
                     Start a new game
                 </Button>
             </Form>

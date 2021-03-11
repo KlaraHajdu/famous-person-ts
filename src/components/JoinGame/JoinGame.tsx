@@ -53,7 +53,9 @@ function JoinGame() {
         return playerNameExists.payload;
     };
 
-    const handleJoinGame = async () => {
+    const handleJoinGame = async (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+        event.preventDefault();
+
         if (!ownName) {
             return;
         }
@@ -115,7 +117,7 @@ function JoinGame() {
                         {gameIdHelperText}
                     </Form.Text>
                 </Form.Group>
-                <Button variant="warning" onClick={handleJoinGame} data-testid="submit-button">
+                <Button variant="warning" type="submit" onClick={handleJoinGame} data-testid="submit-button">
                     Join the game
                 </Button>
             </Form>

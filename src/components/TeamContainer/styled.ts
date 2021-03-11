@@ -2,7 +2,7 @@ import styled from "styled-components"
 import { gameTheme } from "../../Theme/theme";
 import TeamType from "../../types/TeamType";
 
-export const TeamContainerInThreeColumns = styled.div<{team: string}>`
+export const TeamContainerInThreeColumns = styled.div<{team: TeamType}>`
     width: 80%;
 
     margin: 3em auto;
